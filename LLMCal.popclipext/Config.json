@@ -1,0 +1,25 @@
+{
+    "name": "LLMCal",
+    "identifier": "com.llmcal.calendar",
+    "description": "Convert text to calendar event using LLM",
+    "note": "Please enter your Anthropic API key in the settings.",
+    "options": [
+        {
+            "identifier": "anthropic_api_key",
+            "label": "Anthropic API Key",
+            "type": "string",
+            "description": "Enter your Anthropic API key from https://console.anthropic.com/",
+            "secure": true
+        }
+    ],
+    "actions": [
+        {
+            "title": "Add to Calendar",
+            "icon": "calendar",
+            "shell script file": "calendar.sh",
+            "requirements": ["text"],
+            "stay": false
+        }
+    ],
+    "popclipVersion": 3857
+}
