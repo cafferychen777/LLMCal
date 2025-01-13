@@ -6,6 +6,14 @@
 
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
 
+<div align="center">
+  <h3>
+    <a href="https://cafferychen777.github.io/LLMCal" target="_blank">
+      👉 Try Interactive Demo 👈
+    </a>
+  </h3>
+</div>
+
 ## Features
 
 - 🤖 **AI-Powered**: Uses Claude AI to understand natural language event descriptions
