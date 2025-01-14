@@ -242,7 +242,7 @@ export default function LLMCalDemo() {
           </div>
           
           {/* Messages Container */}
-          <div className="p-6 relative min-h-[400px]">
+          <div className="p-6 pb-24 relative min-h-[400px]">
             <div className="space-y-4">
               {messages.map((msg, idx) => (
                 <Message 
@@ -255,17 +255,19 @@ export default function LLMCalDemo() {
             </div>
 
             {messages.length === conversation.length && !selectedText && (
-              <button
-                onClick={handleTextSelect}
-                className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-2 mx-auto"
-              >
-                Select Message to Add Event
-                <ChevronRight size={16} />
-              </button>
+              <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+                <button
+                  onClick={handleTextSelect}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-2"
+                >
+                  Select Message to Add Event
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             )}
             
             {showMenu && (
-              <div className="absolute bottom-24 right-8 transform transition-all duration-300">
+              <div className="absolute bottom-6 right-8 transform transition-all duration-300">
                 <div className="bg-gray-800 rounded-lg shadow-xl p-1.5 backdrop-blur-lg">
                   <button
                     onClick={handleAddToCalendar}
