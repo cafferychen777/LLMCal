@@ -10,10 +10,50 @@ log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S'): $1" >> "$LOG_FILE"
 }
 
+# 获取系统语言
+get_system_language() {
+    local sys_lang=$(defaults read .GlobalPreferences AppleLanguages | awk 'NR==2 {print $1}' | tr -d '",')
+    case "$sys_lang" in
+        zh*) echo "zh" ;;
+        es*) echo "es" ;;
+        *) echo "en" ;;
+    esac
+}
+
+# 获取当前语言设置
+get_language() {
+    if [ "$POPCLIP_OPTION_LANGUAGE" = "auto" ]; then
+        get_system_language
+    else
+        echo "$POPCLIP_OPTION_LANGUAGE"
+    fi
+}
+
+# 获取翻译文本
+get_translation() {
+    local lang=$(get_language)
+    local key=$1
+    local translations_file="$POPCLIP_BUNDLE_PATH/i18n.json"
+    
+    if [ -f "$translations_file" ]; then
+        echo $(cat "$translations_file" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    print(data.get('$lang', {}).get('$key', data['en']['$key']))
+except:
+    print('Translation error')
+")
+    else
+        echo "Translation file not found"
+    fi
+}
+
 log "开始处理文本: $POPCLIP_TEXT"
 
 # 显示处理开始的通知
-osascript -e 'display notification "正在处理..." with title "QuickCal"'
+processing_msg=$(get_translation "processing")
+osascript -e "display notification \"$processing_msg\" with title \"QuickCal\""
 
 # 获取当前日期作为参考
 TODAY=$(date +%Y-%m-%d)
@@ -203,8 +243,16 @@ log "执行 AppleScript: $APPLE_SCRIPT"
 # 执行 AppleScript
 osascript -e "$APPLE_SCRIPT"
 
-# 显示成功通知
-osascript -e "display notification \"$TITLE\" with title \"已创建日历事件\""
+# 如果成功创建事件，显示成功通知
+if [ $? -eq 0 ]; then
+    success_msg=$(get_translation "success")
+    osascript -e "display notification \"$success_msg\" with title \"QuickCal\""
+    log "成功创建事件"
+else
+    error_msg=$(get_translation "error")
+    osascript -e "display notification \"$error_msg\" with title \"QuickCal\""
+    log "创建事件失败"
+fi
 
 # 清理临时文件
 rm -f "$TEMP_PYTHON_FILE"

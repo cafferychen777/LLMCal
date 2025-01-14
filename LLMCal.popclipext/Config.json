@@ -10,6 +10,19 @@
             "type": "string",
             "description": "Enter your Anthropic API key from https://console.anthropic.com/",
             "secure": true
+        },
+        {
+            "identifier": "language",
+            "label": "Language",
+            "type": "multiple",
+            "values": ["auto", "en", "zh", "es"],
+            "valueLabels": {
+                "auto": "Auto (System)",
+                "en": "English",
+                "zh": "中文",
+                "es": "Español"
+            },
+            "default": "auto"
         }
     ],
     "actions": [
