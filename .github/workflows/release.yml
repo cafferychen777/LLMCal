@@ -26,6 +26,7 @@ jobs:
         run: |
           cd LLMCal.popclipext
           zip -r ../LLMCal.popclipext.zip *
+          cp ../LLMCal.popclipext.zip ../
 
       - name: Create Release
         id: create_release
@@ -42,3 +43,11 @@ jobs:
           files: LLMCal.popclipext.zip
           draft: false
           prerelease: false
+
+      - name: Update repository ZIP file
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add LLMCal.popclipext.zip
+          git commit -m "chore: update extension package to v${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
+          git push
