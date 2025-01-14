@@ -1,4 +1,26 @@
+# macOS
 .DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.pyc
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Testing
 test_logs/
 *.log
+test_*.py
+
+# Build
 *.bak
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/

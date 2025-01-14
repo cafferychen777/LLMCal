@@ -1,0 +1,26 @@
+{
+  "en": {
+    "success": "Event successfully added to calendar",
+    "error": "Failed to add event to calendar",
+    "api_error": "API request failed",
+    "invalid_key": "Invalid API key",
+    "no_text": "No text selected",
+    "processing": "Processing your request..."
+  },
+  "zh": {
+    "success": "已成功添加事件到日历",
+    "error": "添加事件到日历失败",
+    "api_error": "API 请求失败",
+    "invalid_key": "无效的 API 密钥",
+    "no_text": "未选择文本",
+    "processing": "正在处理您的请求..."
+  },
+  "es": {
+    "success": "Evento añadido al calendario con éxito",
+    "error": "Error al añadir evento al calendario",
+    "api_error": "Error en la solicitud de API",
+    "invalid_key": "Clave API inválida",
+    "no_text": "No hay texto seleccionado",
+    "processing": "Procesando su solicitud..."
+  }
+}

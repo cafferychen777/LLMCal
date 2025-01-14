@@ -15,7 +15,7 @@
     "actions": [
         {
             "title": "Add to Calendar",
-            "icon": "calendar",
+            "icon": "LLMCal.png",
             "shell script file": "calendar.sh",
             "requirements": ["text"],
             "stay": false
