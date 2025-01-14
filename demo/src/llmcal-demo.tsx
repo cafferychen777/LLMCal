@@ -40,18 +40,21 @@ export default function LLMCalDemo() {
     if (initialized.current) return;
     initialized.current = true;
     
-    setTimeout(() => setAnimate(true), 100);
-    // 模拟消息逐条发送
-    conversation.forEach((msg, index) => {
-      setTimeout(() => {
-        setIsTyping(true);
+    requestAnimationFrame(() => {
+      setAnimate(true);
+      conversation.forEach((msg, index) => {
         setTimeout(() => {
-          setIsTyping(false);
-          setMessages(prev => [...prev, msg]);
-        }, 1000);
-      }, index * 2000);
+          setIsTyping(true);
+          setTimeout(() => {
+            setIsTyping(false);
+            setMessages(prev => [...prev, msg]);
+          }, 1000);
+        }, index * 2000);
+      });
     });
   }, []);
+
+  const messageAnimation = animate ? 'animate-fadeIn' : '';
 
   const handleTextSelect = () => {
     setSelectedText(conversation[3]);
@@ -72,7 +75,15 @@ export default function LLMCalDemo() {
   };
 
   const Message = ({ message, isSelected }: { message: Message; isSelected: boolean }) => (
-    <div className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'} mb-4`}>
+    <div className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'} mb-4 items-end ${messageAnimation}`}>
+      {message.sender !== 'me' && (
+        <div className="flex flex-col items-center mr-2">
+          <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mb-1">
+            <span className="text-white text-sm">A</span>
+          </div>
+          <span className="text-xs text-gray-500">Alex</span>
+        </div>
+      )}
       <div className={`max-w-[70%] rounded-2xl px-4 py-2 ${
         message.sender === 'me' 
           ? `${isSelected ? 'bg-blue-200' : 'bg-blue-500'} text-white` 
@@ -80,6 +91,14 @@ export default function LLMCalDemo() {
       } ${isSelected ? 'ring-2 ring-blue-400' : ''}`}>
         <p className="text-sm">{message.text}</p>
       </div>
+      {message.sender === 'me' && (
+        <div className="flex flex-col items-center ml-2">
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mb-1">
+            <span className="text-white text-sm">M</span>
+          </div>
+          <span className="text-xs text-gray-500">Me</span>
+        </div>
+      )}
     </div>
   );
 
