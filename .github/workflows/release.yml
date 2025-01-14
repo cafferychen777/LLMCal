@@ -1,0 +1,43 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'LLMCal.popclipext/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(date +'%Y.%m.%d.%H%M')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create ZIP file
+        run: |
+          cd LLMCal.popclipext
+          zip -r ../LLMCal.popclipext.zip *
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: Release v${{ steps.get_version.outputs.version }}
+          body: |
+            Automatic release from main branch
+            
+            Changes in this release:
+            - Date-based version: v${{ steps.get_version.outputs.version }}
+            - Triggered by push to main branch
+          files: LLMCal.popclipext.zip
+          draft: false
+          prerelease: false
