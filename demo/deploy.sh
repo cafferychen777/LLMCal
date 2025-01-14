@@ -9,15 +9,32 @@ npm run build
 # navigate into the build output directory
 cd dist
 
-# place .nojekyll to bypass Jekyll processing
-touch .nojekyll
+# create a temporary directory and copy the dist contents
+mkdir -p /tmp/gh-pages
+cp -r . /tmp/gh-pages/
 
-git init
-git checkout -B main
+# go back to the root of the project
+cd ..
+cd ..
+
+# checkout gh-pages branch
+git checkout gh-pages
+
+# remove existing contents
+rm -rf assets index.html .nojekyll
+
+# copy new contents
+cp -r /tmp/gh-pages/* .
+
+# cleanup
+rm -rf /tmp/gh-pages
+
+# add and commit changes
 git add -A
-git commit -m 'deploy'
+git commit -m 'deploy: update demo site'
 
-# push to gh-pages branch using GITHUB_TOKEN environment variable
-git push -f https://${GITHUB_TOKEN}@github.com/cafferychen777/LLMCal.git main:gh-pages
+# push to gh-pages branch
+git push -f origin gh-pages
 
-cd -
+# go back to previous branch
+git checkout -
