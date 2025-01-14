@@ -29,13 +29,39 @@ LLMCal is a powerful PopClip extension that uses AI to convert selected text int
 - 👥 **Attendees**: Automatically adds event participants from email addresses in the text
 - 🌍 **Time Zones**: Understands and handles different time zones in event descriptions
 
+## Prerequisites
+
+1. **PopClip Installation**
+   - Download PopClip from [https://www.popclip.app/](https://www.popclip.app/)
+   - PopClip requires macOS 10.13 or later
+   - After installation, allow PopClip in System Settings:
+     - Go to System Settings > Privacy & Security > Accessibility
+     - Enable PopClip in the list of allowed apps
+
+2. **Anthropic API Key**
+   - Sign up for an account at [Anthropic](https://console.anthropic.com/)
+   - Create an API key from your dashboard
+   - Keep this key handy for the LLMCal setup
+
 ## Installation
 
-1. Download the latest release (`LLMCal.popclipext.zip`)
-2. Double-click the downloaded file to install it in PopClip
-3. When prompted, click "Install Extension"
-4. Open PopClip's preferences and click on the LLMCal extension settings
-5. Enter your Anthropic API key (Get one from [https://console.anthropic.com/](https://console.anthropic.com/))
+1. **Install LLMCal Extension**
+   - Download the latest release (`LLMCal.popclipext.zip`) from the [Releases page](https://github.com/cafferychen777/LLMCal/releases)
+   - Double-click the downloaded file to install it in PopClip
+   - When prompted, click "Install Extension"
+
+2. **Configure LLMCal**
+   - Open PopClip's preferences (click the PopClip icon in the menu bar and select the gear icon)
+   - Find and click on the LLMCal extension in the extensions list
+   - Enter your Anthropic API key in the settings field
+   - Click "Save" to apply the changes
+
+3. **Verify Installation**
+   - The calendar icon should appear in the PopClip menu when you select text
+   - If you don't see PopClip when selecting text:
+     - Make sure PopClip is running (the icon should be visible in the menu bar)
+     - Try selecting text again in any application
+     - If needed, restart PopClip from the menu bar icon
 
 ## Usage
 
@@ -112,13 +138,39 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 - 👥 **参与者**：自动从文本中的电子邮件地址添加事件参与者
 - 🌍 **时区**：理解并处理事件描述中的不同时区
 
+## 前提条件
+
+1. **PopClip 安装**
+   - 从 [https://www.popclip.app/](https://www.popclip.app/) 下载 PopClip
+   - PopClip 需要 macOS 10.13 或更高版本
+   - 安装后，在系统设置中允许 PopClip：
+     - 转到系统设置 > 隐私与安全 > 辅助功能
+     - 在允许的应用程序列表中启用 PopClip
+
+2. **Anthropic API 密钥**
+   - 在 [Anthropic](https://console.anthropic.com/) 注册一个账户
+   - 从您的仪表板创建一个 API 密钥
+   - 为 LLMCal 设置保留此密钥
+
 ## 安装
 
-1. 下载最新版本（`LLMCal.popclipext.zip`）
-2. 双击下载的文件以在 PopClip 中安装
-3. 出现提示时，点击"安装扩展"
-4. 打开 PopClip 的偏好设置并点击 LLMCal 扩展设置
-5. 输入你的 Anthropic API 密钥（从 [https://console.anthropic.com/](https://console.anthropic.com/) 获取）
+1. **安装 LLMCal 扩展**
+   - 从 [发布页面](https://github.com/cafferychen777/LLMCal/releases) 下载最新版本（`LLMCal.popclipext.zip`）
+   - 双击下载的文件以在 PopClip 中安装
+   - 出现提示时，点击“安装扩展”
+
+2. **配置 LLMCal**
+   - 打开 PopClip 的偏好设置（点击菜单栏中的 PopClip 图标并选择齿轮图标）
+   - 在扩展列表中找到并点击 LLMCal 扩展
+   - 在设置字段中输入您的 Anthropic API 密钥
+   - 点击“保存”以应用更改
+
+3. **验证安装**
+   - 选择文本时，PopClip 菜单中应该出现日历图标
+   - 如果您没有看到 PopClip：
+     - 确保 PopClip 正在运行（菜单栏中应该可见图标）
+     - 尝试在任何应用程序中再次选择文本
+     - 如果需要，从菜单栏图标重新启动 PopClip
 
 ## 使用方法
 
@@ -127,7 +179,7 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
    - "每周一上午9:30的站会，30分钟，Zoom链接：https://zoom.us/j/123"
    - "下周五中午和约翰在市中心星巴克吃午饭"
 2. 点击 PopClip 菜单中的日历图标
-3. 事件将自动创建在你的日历中，包含所有相关详细信息
+3. 事件将自动创建在您的日历中，包含所有相关详细信息
 
 ## 输入示例
 
@@ -195,13 +247,39 @@ LLMCal es una potente extensión de PopClip que utiliza IA para convertir texto 
 - 👥 **Participantes**: Añade automáticamente participantes del evento desde direcciones de correo electrónico en el texto
 - 🌍 **Zonas Horarias**: Comprende y maneja diferentes zonas horarias en las descripciones de eventos
 
+## Prerrequisitos
+
+1. **Instalación de PopClip**
+   - Descarga PopClip desde [https://www.popclip.app/](https://www.popclip.app/)
+   - PopClip requiere macOS 10.13 o posterior
+   - Después de la instalación, permite PopClip en la configuración del sistema:
+     - Ve a Configuración del sistema > Privacidad y seguridad > Accesibilidad
+     - Activa PopClip en la lista de aplicaciones permitidas
+
+2. **Clave API de Anthropic**
+   - Registra una cuenta en [Anthropic](https://console.anthropic.com/)
+   - Crea una clave API desde tu panel de control
+   - Conserva esta clave para la configuración de LLMCal
+
 ## Instalación
 
-1. Descarga la última versión (`LLMCal.popclipext.zip`)
-2. Haz doble clic en el archivo descargado para instalarlo en PopClip
-3. Cuando se te solicite, haz clic en "Instalar Extensión"
-4. Abre las preferencias de PopClip y haz clic en la configuración de la extensión LLMCal
-5. Ingresa tu clave API de Anthropic (Obtén una en [https://console.anthropic.com/](https://console.anthropic.com/))
+1. **Instalar la extensión LLMCal**
+   - Descarga la última versión (`LLMCal.popclipext.zip`) desde la [página de lanzamientos](https://github.com/cafferychen777/LLMCal/releases)
+   - Haz doble clic en el archivo descargado para instalarlo en PopClip
+   - Cuando se te solicite, haz clic en "Instalar Extensión"
+
+2. **Configurar LLMCal**
+   - Abre las preferencias de PopClip (haz clic en el icono de PopClip en la barra de menús y selecciona el icono de engranaje)
+   - Encuentra y haz clic en la extensión LLMCal en la lista de extensiones
+   - Ingresa tu clave API de Anthropic en el campo de configuración
+   - Haz clic en "Guardar" para aplicar los cambios
+
+3. **Verificar la instalación**
+   - El icono del calendario debería aparecer en el menú de PopClip cuando seleccionas texto
+   - Si no ves PopClip cuando seleccionas texto:
+     - Asegúrate de que PopClip esté en ejecución (el icono debería ser visible en la barra de menús)
+     - Intenta seleccionar texto de nuevo en cualquier aplicación
+     - Si es necesario, reinicia PopClip desde el icono de la barra de menús
 
 ## Uso
 
