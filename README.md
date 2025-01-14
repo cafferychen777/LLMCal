@@ -8,9 +8,13 @@
 
 <div align="center">
   <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - AI-Powered Calendar Event Creator for PopClip</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/Demo-Live-brightgreen" alt="Live Demo">
+  </a>
 </div>
-
-# LLMCal - AI-Powered Calendar Event Creator for PopClip
 
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
 
@@ -83,13 +87,17 @@ For issues, feature requests, or contributions, please visit the [GitHub reposit
 
 This project is licensed under the GNU Affero General Public License Version 3 (AGPLv3) with Commons Clause - see the [LICENSE](LICENSE) file for details. This license ensures that the software remains open source while protecting against commercial exploitation. Any modifications or derivative works must also be released under the same license terms.
 
-# Chinese
+# 中文
 
 <div align="center">
   <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - 基于 AI 的 PopClip 日历事件创建工具</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/演示-查看-brightgreen" alt="在线演示">
+  </a>
 </div>
-
-# LLMCal - 基于 AI 的 PopClip 日历事件创建工具
 
 LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为日历事件。它能理解自然语言描述，并自动创建包含适当标题、时间、地点、会议链接和提醒的事件。
 
@@ -166,9 +174,13 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 
 <div align="center">
   <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - Creador de Eventos de Calendario Impulsado por IA para PopClip</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/Demo-Ver-brightgreen" alt="Demo en vivo">
+  </a>
 </div>
-
-# LLMCal - Creador de Eventos de Calendario Impulsado por IA para PopClip
 
 LLMCal es una potente extensión de PopClip que utiliza IA para convertir texto seleccionado en eventos de calendario. Comprende descripciones en lenguaje natural y crea automáticamente eventos con títulos, horarios, ubicaciones, enlaces de reunión y recordatorios apropiados.
 
