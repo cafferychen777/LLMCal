@@ -1,4 +1,8 @@
-Languages: [English](#english) | [中文](#chinese) | [Español](#español)
+<div align="center">
+
+**[English](#english)** | **[中文](#chinese)** | **[Español](#español)**
+
+</div>
 
 # English
 
