@@ -14,6 +14,24 @@
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/Demo-Live-brightgreen" alt="Live Demo">
   </a>
+  <a href="https://github.com/cafferychen777/LLMCal/stargazers">
+    <img src="https://img.shields.io/github/stars/cafferychen777/LLMCal" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/network/members">
+    <img src="https://img.shields.io/github/forks/cafferychen777/LLMCal" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/issues">
+    <img src="https://img.shields.io/github/issues/cafferychen777/LLMCal" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/releases">
+    <img src="https://img.shields.io/github/v/release/cafferychen777/LLMCal" alt="GitHub release">
+  </a>
+  <a href="https://www.popclip.app/">
+    <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform">
+  </a>
 </div>
 
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
@@ -123,6 +141,24 @@ This project is licensed under the GNU Affero General Public License Version 3 (
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/演示-查看-brightgreen" alt="在线演示">
   </a>
+  <a href="https://github.com/cafferychen777/LLMCal/stargazers">
+    <img src="https://img.shields.io/github/stars/cafferychen777/LLMCal" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/network/members">
+    <img src="https://img.shields.io/github/forks/cafferychen777/LLMCal" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/issues">
+    <img src="https://img.shields.io/github/issues/cafferychen777/LLMCal" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/releases">
+    <img src="https://img.shields.io/github/v/release/cafferychen777/LLMCal" alt="GitHub release">
+  </a>
+  <a href="https://www.popclip.app/">
+    <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform">
+  </a>
 </div>
 
 LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为日历事件。它能理解自然语言描述，并自动创建包含适当标题、时间、地点、会议链接和提醒的事件。
@@ -231,6 +267,24 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
   
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/Demo-Ver-brightgreen" alt="Demo en vivo">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/stargazers">
+    <img src="https://img.shields.io/github/stars/cafferychen777/LLMCal" alt="GitHub stars">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/network/members">
+    <img src="https://img.shields.io/github/forks/cafferychen777/LLMCal" alt="GitHub forks">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/issues">
+    <img src="https://img.shields.io/github/issues/cafferychen777/LLMCal" alt="GitHub issues">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/releases">
+    <img src="https://img.shields.io/github/v/release/cafferychen777/LLMCal" alt="GitHub release">
+  </a>
+  <a href="https://www.popclip.app/">
+    <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform">
   </a>
 </div>
 
