@@ -1,22 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calendar, Clock, Check, ChevronRight, X, Video, ChevronLeft, ChevronDown } from 'lucide-react';
 
+interface Message {
+  sender: string;
+  text: string;
+}
+
 export default function LLMCalDemo() {
-  const [isSelected, setIsSelected] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [selectedText, setSelectedText] = useState<Message | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showCalendarAdd, setShowCalendarAdd] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showCalendarView, setShowCalendarView] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const initialized = useRef(false);
 
-  const demoText = "Product demo next Tuesday 3pm with client@example.com, 1 hour on Zoom https://zoom.us/j/123, remind me 15 minutes before";
+  const conversation: Message[] = [
+    {
+      sender: "friend",
+      text: "Hey! Should we schedule that product demo for the client?"
+    },
+    {
+      sender: "me",
+      text: "Yes! Let's do it next Tuesday at 3pm"
+    },
+    {
+      sender: "friend",
+      text: "Perfect! I'll set up the Zoom call. Here's the link: https://zoom.us/j/123"
+    },
+    {
+      sender: "me",
+      text: "Great! So we're set for product demo next Tuesday 3pm with client@example.com, 1 hour on Zoom https://zoom.us/j/123. I'll make sure to add a reminder 15 minutes before."
+    }
+  ];
 
   useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    
     setTimeout(() => setAnimate(true), 100);
+    // 模拟消息逐条发送
+    conversation.forEach((msg, index) => {
+      setTimeout(() => {
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+          setMessages(prev => [...prev, msg]);
+        }, 1000);
+      }, index * 2000);
+    });
   }, []);
 
-  const handleSelect = () => {
-    setIsSelected(true);
+  const handleTextSelect = () => {
+    setSelectedText(conversation[3]);
     setTimeout(() => setShowMenu(true), 500);
   };
 
@@ -33,10 +71,29 @@ export default function LLMCalDemo() {
     }, 1500);
   };
 
-  const handleReset = () => {
-    setShowCalendarView(false);
-    setIsSelected(false);
-  };
+  const Message = ({ message, isSelected }: { message: Message; isSelected: boolean }) => (
+    <div className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'} mb-4`}>
+      <div className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+        message.sender === 'me' 
+          ? `${isSelected ? 'bg-blue-200' : 'bg-blue-500'} text-white` 
+          : 'bg-gray-100 text-gray-800'
+      } ${isSelected ? 'ring-2 ring-blue-400' : ''}`}>
+        <p className="text-sm">{message.text}</p>
+      </div>
+    </div>
+  );
+
+  const TypingIndicator = () => (
+    <div className="flex justify-start mb-4">
+      <div className="bg-gray-100 rounded-2xl px-4 py-2">
+        <div className="flex gap-1">
+          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+        </div>
+      </div>
+    </div>
+  );
 
   const CalendarView = () => (
     <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
@@ -51,7 +108,7 @@ export default function LLMCalDemo() {
             </div>
             <span className="ml-4 font-medium">Calendar</span>
           </div>
-          <button onClick={handleReset} className="hover:bg-white/10 p-1 rounded">
+          <button onClick={() => setShowCalendarView(false)} className="hover:bg-white/10 p-1 rounded">
             <X size={16} />
           </button>
         </div>
@@ -154,35 +211,42 @@ export default function LLMCalDemo() {
         <CalendarView />
       ) : (
         <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl bg-opacity-90 border border-gray-100">
-          <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-200">
+          {/* iMessage Header */}
+          <div className="bg-gray-100 px-4 py-3 flex items-center justify-between border-b border-gray-200">
             <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-400 hover:bg-red-500 transition-colors"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-400 hover:bg-yellow-500 transition-colors"></div>
-              <div className="w-3 h-3 rounded-full bg-green-400 hover:bg-green-500 transition-colors"></div>
+              <div className="w-3 h-3 rounded-full bg-red-400"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+              <div className="w-3 h-3 rounded-full bg-green-400"></div>
             </div>
-            <div className="flex-1 text-center">
-              <span className="text-sm text-gray-500 font-medium">Text Editor</span>
-            </div>
+            <span className="text-sm text-gray-500 font-medium">Messages</span>
+            <div className="w-8"></div>
           </div>
           
-          <div className="p-8 relative">
-            <p className={`text-lg leading-relaxed font-medium text-gray-700 transition-all duration-300 p-4 rounded-lg
-              ${isSelected ? 'bg-blue-50 shadow-sm' : 'hover:bg-gray-50'}`}>
-              {demoText}
-            </p>
-            
-            {!isSelected && (
+          {/* Messages Container */}
+          <div className="p-6 relative min-h-[400px]">
+            <div className="space-y-4">
+              {messages.map((msg, idx) => (
+                <Message 
+                  key={idx} 
+                  message={msg} 
+                  isSelected={selectedText === msg}
+                />
+              ))}
+              {isTyping && <TypingIndicator />}
+            </div>
+
+            {messages.length === conversation.length && !selectedText && (
               <button
-                onClick={handleSelect}
+                onClick={handleTextSelect}
                 className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-2 mx-auto"
               >
-                Select Text
+                Select Message to Add Event
                 <ChevronRight size={16} />
               </button>
             )}
             
             {showMenu && (
-              <div className="absolute top-1/2 right-8 transform -translate-y-1/2 transition-all duration-300">
+              <div className="absolute bottom-24 right-8 transform transition-all duration-300">
                 <div className="bg-gray-800 rounded-lg shadow-xl p-1.5 backdrop-blur-lg">
                   <button
                     onClick={handleAddToCalendar}
@@ -198,9 +262,10 @@ export default function LLMCalDemo() {
         </div>
       )}
       
+      {/* Overlays */}
       {showCalendarAdd && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm transition-all duration-300">
-          <div className="bg-white p-6 rounded-xl shadow-2xl flex items-center gap-4 transform transition-all duration-300">
+          <div className="bg-white p-6 rounded-xl shadow-2xl flex items-center gap-4">
             <div className="p-3 bg-blue-50 rounded-full">
               <Clock className="text-blue-600 animate-spin" size={24} />
             </div>
@@ -211,7 +276,7 @@ export default function LLMCalDemo() {
       
       {showSuccess && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm transition-all duration-300">
-          <div className="bg-white p-6 rounded-xl shadow-2xl flex items-center gap-4 transform scale-110 transition-all duration-300">
+          <div className="bg-white p-6 rounded-xl shadow-2xl flex items-center gap-4 transform scale-110">
             <div className="p-3 bg-green-50 rounded-full">
               <Check className="text-green-600" size={24} />
             </div>

@@ -1,26 +1,34 @@
-# macOS
-.DS_Store
+# Dependencies
+node_modules
+venv
 
-# Python
+# Build outputs
+dist
+build
+*.zip
+*.popclipextz
+LLMCal-latest.popclipext.zip
+LLMCal.popclipext.zip
+LLMCal.popclipextz
+
+# IDE and OS files
+.DS_Store
+.idea
+.vscode
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Cache and logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.vite
 __pycache__/
 *.py[cod]
-venv/
-*.pyc
-
-# Node.js
-node_modules/
-package-lock.json
-
-# Testing
-test_logs/
-*.log
-test_*.py
-
-# Build
-*.bak
-dist/
-build/
-
-# IDE
-.idea/
-.vscode/
