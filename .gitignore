@@ -1,0 +1,4 @@
+.DS_Store
+test_logs/
+*.log
+*.bak
