@@ -73,4 +73,4 @@ For issues, feature requests, or contributions, please visit the [GitHub reposit
 
 ## License
 
-MIT License - feel free to modify and reuse this extension according to your needs.
+This project is licensed under the GNU Affero General Public License Version 3 (AGPLv3) with Commons Clause - see the [LICENSE](LICENSE) file for details. This license ensures that the software remains open source while protecting against commercial exploitation. Any modifications or derivative works must also be released under the same license terms.
