@@ -3,8 +3,8 @@
 # abort on errors
 set -e
 
-# build
-npm run build
+# build with GitHub Pages base path
+GITHUB_PAGES=true npm run build
 
 # create a temporary directory and copy the dist contents
 mkdir -p /tmp/gh-pages
