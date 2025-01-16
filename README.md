@@ -108,6 +108,30 @@ LLMCal is a powerful PopClip extension that uses AI to convert selected text int
 - Calendar.app access permission
 - Internet connection
 
+## Google Calendar Integration
+
+While LLMCal currently works directly with Apple Calendar, you can still use it with Google Calendar by following these steps:
+
+1. **Add Google Calendar to Apple Calendar**
+   - Open System Settings on your Mac
+   - Go to "Internet Accounts"
+   - Click "Add Account" and select "Google"
+   - Sign in with your Google account
+   - Make sure "Calendar" is checked in the list of services
+   - Your Google Calendar will now sync with Apple Calendar
+
+2. **Usage Tips**
+   - Events created through LLMCal will automatically sync to your Google Calendar
+   - All events, reminders, and updates will be synchronized between both calendars
+   - You can manage which calendars to show/hide in Apple Calendar's sidebar
+   - The sync is bi-directional: changes made in Google Calendar will appear in Apple Calendar and vice versa
+
+3. **Troubleshooting**
+   - If events aren't syncing, check your internet connection
+   - Ensure your Google account is properly connected in System Settings
+   - Try removing and re-adding your Google account if issues persist
+   - Check if you've granted necessary permissions to both calendars
+
 ## Privacy & Security
 
 - Your API key is stored securely in PopClip's settings
@@ -235,6 +259,30 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 - Calendar.app 访问权限
 - 互联网连接
 
+## Google 日历集成
+
+虽然 LLMCal 目前直接与 Apple 日历一起工作，但您仍然可以按照以下步骤使用它与 Google 日历：
+
+1. **将 Google 日历添加到 Apple 日历**
+   - 在您的 Mac 上打开系统设置
+   - 转到“互联网账户”
+   - 点击“添加账户”并选择“Google”
+   - 使用您的 Google 账户登录
+   - 确保服务列表中选中了“日历”
+   - 您的 Google 日历现在将与 Apple 日历同步
+
+2. **使用提示**
+   - 通过 LLMCal 创建的事件将自动同步到您的 Google 日历
+   - 所有事件、提醒和更新都将在两个日历之间同步
+   - 您可以在 Apple 日历的侧边栏中管理显示/隐藏哪些日历
+   - 同步是双向的：在 Google 日历中进行的更改将出现在 Apple 日历中，反之亦然
+
+3. **故障排除**
+   - 如果事件没有同步，请检查您的互联网连接
+   - 确保您的 Google 账户在系统设置中正确连接
+   - 如果问题持续，请尝试删除并重新添加您的 Google 账户
+   - 检查是否已授予两个日历必要的权限
+
 ## 隐私与安全
 
 - 你的 API 密钥安全存储在 PopClip 的设置中
@@ -361,6 +409,30 @@ LLMCal es una potente extensión de PopClip que utiliza IA para convertir texto 
 - Clave API de Anthropic
 - Permiso de acceso a Calendar.app
 - Conexión a Internet
+
+## Integración con Google Calendar
+
+Aunque LLMCal actualmente funciona directamente con Apple Calendar, puedes seguir utilizando Google Calendar siguiendo estos pasos:
+
+1. **Agregar Google Calendar a Apple Calendar**
+   - Abre la configuración del sistema en tu Mac
+   - Ve a "Cuentas de Internet"
+   - Haz clic en "Agregar cuenta" y selecciona "Google"
+   - Inicia sesión con tu cuenta de Google
+   - Asegúrate de que "Calendario" esté seleccionado en la lista de servicios
+   - Tu calendario de Google ahora se sincronizará con Apple Calendar
+
+2. **Consejos de uso**
+   - Los eventos creados a través de LLMCal se sincronizarán automáticamente con tu calendario de Google
+   - Todos los eventos, recordatorios y actualizaciones se sincronizarán entre ambos calendarios
+   - Puedes gestionar qué calendarios mostrar/ocultar en la barra lateral de Apple Calendar
+   - La sincronización es bidireccional: los cambios realizados en Google Calendar aparecerán en Apple Calendar y viceversa
+
+3. **Solución de problemas**
+   - Si los eventos no se sincronizan, verifica tu conexión a Internet
+   - Asegúrate de que tu cuenta de Google esté correctamente conectada en la configuración del sistema
+   - Intenta eliminar y volver a agregar tu cuenta de Google si persisten los problemas
+   - Verifica si has otorgado los permisos necesarios a ambos calendarios
 
 ## Privacidad y Seguridad
 
