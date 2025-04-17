@@ -7,7 +7,7 @@
 # English
 
 <div align="center">
-  <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
   
   <h1>LLMCal - AI-Powered Calendar Event Creator for PopClip</h1>
   
@@ -158,7 +158,7 @@ This project is licensed under the GNU Affero General Public License Version 3 (
 # 中文
 
 <div align="center">
-  <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
   
   <h1>LLMCal - 基于 AI 的 PopClip 日历事件创建工具</h1>
   
@@ -309,7 +309,7 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 # Español
 
 <div align="center">
-  <img src="assets/logo.svg" alt="LLMCal Logo" width="200">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
   
   <h1>LLMCal - Creador de Eventos de Calendario Impulsado por IA para PopClip</h1>
   
