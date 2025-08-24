@@ -44,6 +44,15 @@
   <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
   </a>
+  <a href="https://shields.io/category/platforms">
+    <img src="https://img.shields.io/badge/macOS-12%2B-black?logo=apple" alt="macOS 12+">
+  </a>
+  <a>
+    <img src="https://img.shields.io/badge/PopClip-2022.5%2B-orange" alt="PopClip 2022.5+">
+  </a>
+  <a>
+    <img src="https://img.shields.io/badge/Calendars-Apple%20%2F%20Google-success" alt="Apple Calendar / Google Calendar via macOS integration">
+  </a>
 <p align="center">
   <a href="https://cafferychen777.github.io/LLMCal/features.html">
     <img src="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/screenshots/feature-popclip-flow.svg" alt="LLMCal PopClip flow — highlight text to calendar event" width="760" />
