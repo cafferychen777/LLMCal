@@ -209,6 +209,11 @@ While LLMCal currently works directly with Apple Calendar, you can still use it 
 - Does it detect recurring events and reminders?
   - Yes. It parses common recurring patterns and reminders from natural language.
 - Does it support Zoom/Teams/Meet links?
+- Why use a PopClip extension instead of a browser add‑on?
+  - Works system‑wide on macOS with any app (Mail, Notes, Slack, etc.), no need to stay in a browser.
+- How is this different from native calendar parsing?
+  - LLMCal leverages AI to reliably extract attendees, links, time zones, and recurring rules beyond typical native parsing.
+
   - Yes. Meeting URLs in the selected text are extracted and added to the event.
 
 ## Comparison to Alternatives

@@ -53,6 +53,14 @@ jobs:
             git log -n 30 --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
           fi
 
+      - name: Extract short highlights from commits
+        id: highlights
+        run: |
+          # Prefer PR titles if available (picked from merged commits), fallback to recent commits
+          git log -n 20 --pretty=format:"- %s" --no-merges | head -n 5 > short_highlights.txt
+          sed -i '1s/^/## Highlights (auto)\n/' short_highlights.txt
+          cat short_highlights.txt >> release_body.md
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
