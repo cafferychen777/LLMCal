@@ -33,6 +33,13 @@
             "default value": "claude-sonnet-4-20250514"
         },
         {
+            "identifier": "user_preferences",
+            "label": "Personal Preferences",
+            "type": "string",
+            "description": "Enter your calendar preferences (e.g., 'I work 9-5 on weekdays', 'Put gym events in Personal calendar', 'Default meeting duration is 1 hour')",
+            "default value": ""
+        },
+        {
             "identifier": "zoom_account_id",
             "label": "Zoom Account ID",
             "type": "string",

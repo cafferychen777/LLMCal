@@ -264,14 +264,29 @@ create_calendar_event_request() {
     local today="$2"
     local tomorrow="$3"
     
+    # Get user preferences if available
+    local user_preferences="${POPCLIP_OPTION_USER_PREFERENCES:-}"
+    local preferences_section=""
+    
+    if [ -n "$user_preferences" ]; then
+        preferences_section="
+IMPORTANT: USER HAS PROVIDED CUSTOM PREFERENCES THAT MUST BE FOLLOWED:
+=====================================================
+$user_preferences
+=====================================================
+
+OVERRIDE INSTRUCTION: When the user preferences specify a calendar for certain types of events (like 'work meetings should be in my Work calendar'), you MUST use that calendar_type regardless of the default rules above. The user's preferences take absolute priority.
+
+For this event, check if it matches any criteria in the user preferences and apply the specified calendar_type.
+"
+    fi
+    
     cat << EOF
 Convert this text to a calendar event: '$text'
 
 Reference dates:
 - Today: $today
 - Tomorrow: $tomorrow
-
-CRITICAL: Analyze the text content and select the most appropriate calendar_type based on urgency, importance, and content type.
 
 Return ONLY valid JSON in this exact format:
 {
@@ -291,7 +306,7 @@ Return ONLY valid JSON in this exact format:
     "attendees": []
 }
 
-CALENDAR TYPE SELECTION RULES - You MUST choose calendar_type based on content analysis:
+CALENDAR TYPE SELECTION RULES - Apply USER PREFERENCES first if provided, otherwise use these defaults:
 
 1. "high_priority": Use when text contains:
    - Words like: urgent, emergency, critical, ASAP, important, must, required, mandatory
@@ -343,6 +358,8 @@ RECURRENCE RULES - IMPORTANT:
 - "monthly_last_friday": last Friday of each month
 - For courses with "TTh" or "MWF" schedule, use the appropriate weekly pattern
 - For Chinese "每二和周四" or "周二周四", use "weekly_tue_thu"
+
+$preferences_section
 EOF
 }
 
