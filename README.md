@@ -70,7 +70,7 @@
 
 
 
-LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
+LLMCal is a PopClip extension for macOS that uses AI to convert natural language into calendar events for Apple Calendar (and Google Calendar via macOS integration). It extracts titles, times, locations, attendees, meeting links (Zoom/Teams/Meet), recurring rules, and reminders.
 ## Table of Contents
 - [Features](#features)
 - [Installation](#installation)
