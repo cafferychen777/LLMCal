@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-label="LLMCal PopClip flow: highlight text to calendar event">
+  <rect width="100%" height="100%" fill="#0f172a"/>
+  <g fill="#e2e8f0" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="28">
+    <text x="60" y="90" font-size="36" fill="#93c5fd">LLMCal — PopClip AI Calendar Extension</text>
+    <text x="60" y="150">1) Highlight text: "Team meeting tomorrow 2pm, Zoom, remind 15m"</text>
+    <text x="60" y="200">2) Click PopClip calendar icon</text>
+    <text x="60" y="250">3) Event created with title, time, Zoom link, reminder</text>
+  </g>
+  <g transform="translate(60,300)">
+    <rect width="320" height="200" rx="12" fill="#1f2937" stroke="#374151"/>
+    <text x="20" y="40" fill="#a7f3d0" font-size="24">Selected Text</text>
+  </g>
+  <g transform="translate(460,300)">
+    <rect width="280" height="200" rx="12" fill="#1f2937" stroke="#374151"/>
+    <text x="20" y="40" fill="#fde68a" font-size="24">PopClip Menu</text>
+  </g>
+  <g transform="translate(820,300)">
+    <rect width="320" height="200" rx="12" fill="#1f2937" stroke="#374151"/>
+    <text x="20" y="40" fill="#93c5fd" font-size="24">Calendar Event</text>
+  </g>
+  <path d="M380,400 L460,400" stroke="#94a3b8" stroke-width="4" marker-end="url(#a)"/>
+  <path d="M740,400 L820,400" stroke="#94a3b8" stroke-width="4" marker-end="url(#a)"/>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>
+

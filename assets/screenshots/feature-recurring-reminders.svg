@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-label="LLMCal recurring events and reminders visualization">
+  <rect width="100%" height="100%" fill="#111827"/>
+  <g fill="#e5e7eb" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="28">
+    <text x="60" y="90" font-size="36" fill="#fca5a5">Recurring Events & Reminders</text>
+    <text x="60" y="150">Weekly standup — Mon 9:30am (RRULE:FREQ=WEEKLY;BYDAY=MO)</text>
+    <text x="60" y="200">Reminder: 15 minutes before</text>
+  </g>
+  <g transform="translate(60,240)">
+    <rect width="520" height="280" rx="12" fill="#1f2937" stroke="#374151"/>
+    <text x="20" y="50" fill="#93c5fd" font-size="24">Natural Language → Structured Data</text>
+    <text x="20" y="100" fill="#a7f3d0" font-size="20">"Weekly standup every Monday at 9:30am, 30 minutes, remind me 15 minutes before"</text>
+    <text x="20" y="150" fill="#fde68a" font-size="20">RRULE + Duration + Reminder</text>
+  </g>
+</svg>
+

@@ -44,6 +44,12 @@
   <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
   </a>
+<p align="center">
+  <a href="https://cafferychen777.github.io/LLMCal/features.html">
+    <img src="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/screenshots/feature-popclip-flow.svg" alt="LLMCal PopClip flow — highlight text to calendar event" width="760" />
+  </a>
+</p>
+
   <a href="https://github.com/cafferychen777/LLMCal/pulls">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome">
   </a>
