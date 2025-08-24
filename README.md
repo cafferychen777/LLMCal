@@ -69,6 +69,16 @@
   <sub>Quick compare:</sub> <a href="https://cafferychen777.github.io/LLMCal/features.html">Features</a> · <a href="https://github.com/cafferychen777/LLMCal/blob/main/docs/FEATURE_DETAILS.md">Details</a>
 </div>
 
+
+<div align="center">
+  <sub>At a glance:</sub>
+  <ul>
+    <li>System-wide PopClip workflow (any app, no browser)</li>
+    <li>Apple Calendar + Google Calendar (via macOS)</li>
+    <li>AI parsing: attendees, links (Zoom/Teams/Meet), time zones, recurring, reminders</li>
+  </ul>
+</div>
+
   </a>
 </div>
 

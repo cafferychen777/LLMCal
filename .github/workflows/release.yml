@@ -42,16 +42,14 @@ jobs:
           BODY_FILE="release_body.md"
           cp "$TEMPLATE_FILE" "$BODY_FILE"
           echo "" >> "$BODY_FILE"
-          echo "## Changes" >> "$BODY_FILE"
-          # Try to get last tag; if none, show recent commits
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -n "$LAST_TAG" ]; then
-            echo "(since $LAST_TAG)" >> "$BODY_FILE"
-            git log "$LAST_TAG"..HEAD --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
-          else
-            echo "(recent commits)" >> "$BODY_FILE"
-            git log -n 30 --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
-          fi
+
+      - name: Extract short highlights from commits (recent 14 days)
+        id: short_changes
+        run: |
+          BODY_FILE="release_body.md"
+          echo "## Changes (last 14 days)" >> "$BODY_FILE"
+          SINCE=$(date -d "14 days ago" +%Y-%m-%d || date -v-14d +%Y-%m-%d)
+          git log --since="$SINCE" --pretty=format:"- %s (%h)" --no-merges | head -n 50 >> "$BODY_FILE"
 
       - name: Extract highlights (prefer PR titles)
         id: highlights
