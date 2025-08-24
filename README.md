@@ -60,6 +60,15 @@
 
 > Quick Install: Download latest release → Double‑click → Enter API key → Select text → Click calendar icon
 
+<div align="center">
+  <a href="https://github.com/cafferychen777/LLMCal/releases" style="margin-right:10px;">⬇️ Download</a>
+  ·
+  <a href="https://cafferychen777.github.io/LLMCal/get-started.html" style="margin:0 10px;">🚀 Get Started</a>
+  ·
+  <a href="https://cafferychen777.github.io/LLMCal/features.html" style="margin-left:10px;">✨ Features</a>
+</div>
+
+
 
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
 ## Table of Contents
