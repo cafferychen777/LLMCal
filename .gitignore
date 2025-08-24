@@ -22,6 +22,29 @@ LLMCal.popclipextz
 .env
 .env.local
 .env.*.local
+.env.production
+.env.development
+.env.test
+
+# Security and credentials
+secrets/
+credentials/
+*.key
+*.pem
+*.crt
+*.cert
+config/secrets.json
+config/credentials.json
+
+# Sensitive test files
+test_credentials.sh
+local_test.sh
+*_secrets.*
+
+# Backup files that might contain sensitive data
+*.bak
+*.backup
+*~
 
 # Cache and logs
 *.log

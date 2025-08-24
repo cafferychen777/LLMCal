@@ -1,8 +1,11 @@
 {
     "name": "LLMCal",
-    "identifier": "com.llmcal.calendar",
-    "description": "Convert text to calendar event using LLM",
-    "note": "Please enter your Anthropic API key in the settings.",
+    "identifier": "com.popclip.extension.llmcal",
+    "description": "Create calendar events using natural language.",
+    "app": {
+        "name": "Calendar",
+        "platform": ["macos"]
+    },
     "options": [
         {
             "identifier": "anthropic_api_key",
@@ -10,6 +13,39 @@
             "type": "string",
             "description": "Enter your Anthropic API key from https://console.anthropic.com/",
             "secure": true
+        },
+        {
+            "identifier": "zoom_account_id",
+            "label": "Zoom Account ID",
+            "type": "string",
+            "description": "Enter your Zoom Account ID",
+            "secure": true
+        },
+        {
+            "identifier": "zoom_client_id",
+            "label": "Zoom Client ID",
+            "type": "string",
+            "description": "Enter your Zoom Client ID from Zoom Marketplace",
+            "secure": true
+        },
+        {
+            "identifier": "zoom_client_secret",
+            "label": "Zoom Client Secret",
+            "type": "string",
+            "description": "Enter your Zoom Client Secret from Zoom Marketplace",
+            "secure": true
+        },
+        {
+            "identifier": "zoom_email",
+            "label": "Zoom Email",
+            "type": "string",
+            "description": "Enter your email address associated with Zoom account"
+        },
+        {
+            "identifier": "zoom_name",
+            "label": "Zoom Display Name",
+            "type": "string",
+            "description": "Enter your display name for Zoom meetings"
         }
     ],
     "actions": [
@@ -19,6 +55,16 @@
             "shell script file": "calendar.sh",
             "requirements": ["text"],
             "stay": false
+        }
+    ],
+    "entitlements": [
+        "network"
+    ],
+    "requirements": [
+        {
+            "type": "shell",
+            "interpreter": "zsh",
+            "shell script": "command -v jq >/dev/null 2>&1"
         }
     ],
     "popclipVersion": 3857

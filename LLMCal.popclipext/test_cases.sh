@@ -31,22 +31,21 @@ declare -a test_cases=(
     "每周五下午4点在健身房团建，1小时，地点：LA Fitness downtown分店"
     "明天中午12点团队午餐会，90分钟，地点：意大利餐厅 Il Fornaio"
     "下周三下午2点产品发布会，3小时，地点：会展中心大厅A，参与者：press@company.com, marketing@company.com"
+    "明天下午3点开zoom会议讨论项目进展，1小时，参与者：team@company.com"
 )
 
-# 测试计数器
-total_tests=0
+# 记录测试结果
 passed_tests=0
 failed_tests=0
 
-# 创建日志目录
+# 创建日志目录和文件
 log_dir="test_logs"
 mkdir -p "$log_dir"
-timestamp=$(date +"%Y%m%d_%H%M%S")
-log_file="$log_dir/test_run_$timestamp.log"
+log_file="$log_dir/test_run_$(date +%Y%m%d_%H%M%S).log"
 
-# 记录日志的函数
+# 日志函数
 log() {
-    echo -e "$1" | tee -a "$log_file"
+    echo "$@" | tee -a "$log_file"
 }
 
 # 运行单个测试用例
@@ -56,8 +55,35 @@ run_test() {
     
     log "\n${BLUE}运行测试 #$test_num: $test_case${NC}"
     
-    # 设置 POPCLIP_TEXT 环境变量
+    # 设置环境变量
     export POPCLIP_TEXT="$test_case"
+    
+    # 检查必需的 API 密钥是否存在
+    if [ -z "$ANTHROPIC_API_KEY" ]; then
+        log "${RED}错误：缺少 ANTHROPIC_API_KEY 环境变量${NC}"
+        log "请设置环境变量: export ANTHROPIC_API_KEY='your-api-key-here'"
+        ((failed_tests++))
+        return 1
+    fi
+    export POPCLIP_OPTION_ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY"
+    
+    # 如果是 Zoom 会议，设置 Zoom 相关的环境变量
+    if [[ "$test_case" =~ [Zz]oom ]]; then
+        if [ -z "$ZOOM_ACCOUNT_ID" ] || [ -z "$ZOOM_CLIENT_ID" ] || [ -z "$ZOOM_CLIENT_SECRET" ]; then
+            log "${RED}错误：缺少 Zoom API 凭据环境变量${NC}"
+            log "请设置以下环境变量:"
+            log "export ZOOM_ACCOUNT_ID='your-account-id'"
+            log "export ZOOM_CLIENT_ID='your-client-id'"
+            log "export ZOOM_CLIENT_SECRET='your-client-secret'"
+            ((failed_tests++))
+            return 1
+        fi
+        export POPCLIP_OPTION_ZOOM_ACCOUNT_ID="$ZOOM_ACCOUNT_ID"
+        export POPCLIP_OPTION_ZOOM_CLIENT_ID="$ZOOM_CLIENT_ID"
+        export POPCLIP_OPTION_ZOOM_CLIENT_SECRET="$ZOOM_CLIENT_SECRET"
+        export POPCLIP_OPTION_ZOOM_EMAIL="$ZOOM_EMAIL"
+        export POPCLIP_OPTION_ZOOM_NAME="$ZOOM_NAME"
+    fi
     
     # 运行 calendar.sh 并捕获输出
     output=$(./calendar.sh 2>&1)
@@ -74,7 +100,7 @@ run_test() {
         ((failed_tests++))
     fi
     
-    # 记录详细信息到日志
+    # 记录详细信息
     log "详细信息:"
     log "- 输入文本: $test_case"
     log "- 退出代码: $exit_code"
