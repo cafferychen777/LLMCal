@@ -17,7 +17,12 @@
     "test:setup:verbose": "node tests/setup/auto-config.js --verbose",
     "test:setup:force": "node tests/setup/auto-config.js --force-reinstall"
   },
-  "keywords": ["calendar", "ai", "popclip", "claude", "macos", "automation"],
+  "keywords": [
+    "calendar", "ai", "popclip", "claude", "macos", "automation",
+    "apple calendar", "google calendar", "ics", "rrule", "reminders",
+    "recurring events", "meeting links", "zoom", "microsoft teams", "google meet",
+    "nlp", "natural language", "event parser", "productivity", "popclip extension"
+  ],
   "author": "cafferychen777",
   "license": "AGPL-3.0-with-Commons-Clause",
   "description": "LLMCal - AI-Powered Calendar Event Creator for PopClip",

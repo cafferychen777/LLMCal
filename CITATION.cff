@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "LLMCal: AI-Powered Calendar Event Creator for PopClip"
+authors:
+  - family-names: Yang
+    given-names: Chen
+version: "1.0.0"
+date-released: 2024-12-01
+repository-code: "https://github.com/cafferychen777/LLMCal"
+license: "AGPL-3.0-only WITH Commons-Clause"
+keywords: [PopClip, macOS, Calendar, AI, NLP, Anthropic, Claude, Productivity]
+abstract: "LLMCal is a PopClip extension that turns natural language into calendar events with multilingual support, recurring events, reminders, and meeting link parsing."
+

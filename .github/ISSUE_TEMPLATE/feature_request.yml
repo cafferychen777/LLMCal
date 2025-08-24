@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest an idea for this project
+labels: [enhancement]
+body:
+  - type: checkboxes
+    attributes:
+      label: Pre-check
+      options:
+        - label: I searched existing issues and docs
+          required: true
+  - type: textarea
+    attributes:
+      label: Problem to solve
+      description: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed solution / UX
+      description: Describe the desired behavior or UX
+  - type: textarea
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    attributes:
+      label: Additional context / examples
+
