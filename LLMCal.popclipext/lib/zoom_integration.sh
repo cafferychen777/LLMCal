@@ -4,9 +4,9 @@
 # Handles all Zoom API integration with improved error handling
 
 # Source error handler
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/error_handler.sh"
-source "$SCRIPT_DIR/date_utils.sh"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # Zoom API Configuration
 readonly ZOOM_OAUTH_URL="https://zoom.us/oauth/token"

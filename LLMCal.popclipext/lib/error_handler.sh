@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Error Handler Module for LLMCal
-# Provides comprehensive error handling with detailed error codes and recovery mechanisms
+# Error Handler Module for LLMCal - Bash 3.2 Compatible Version
+# Works with macOS default bash (3.2)
 
 # Error codes
 readonly ERR_SUCCESS=0
@@ -25,292 +25,256 @@ readonly ERR_PERMISSION_DENIED=61
 readonly ERR_NETWORK_UNAVAILABLE=70
 readonly ERR_DEPENDENCY_MISSING=80
 
-# Error messages mapping
-declare -A ERROR_MESSAGES=(
-    [$ERR_SUCCESS]="Operation completed successfully"
-    [$ERR_GENERAL]="General error occurred"
-    [$ERR_API_KEY_MISSING]="Anthropic API key is missing or invalid"
-    [$ERR_API_REQUEST_FAILED]="Failed to send request to Anthropic API"
-    [$ERR_API_RESPONSE_INVALID]="Invalid response from Anthropic API"
-    [$ERR_API_RATE_LIMITED]="API rate limit exceeded"
-    [$ERR_ZOOM_TOKEN_FAILED]="Failed to obtain Zoom access token"
-    [$ERR_ZOOM_MEETING_FAILED]="Failed to create Zoom meeting"
-    [$ERR_ZOOM_CREDENTIALS_MISSING]="Zoom API credentials are missing"
-    [$ERR_JSON_PARSE_FAILED]="Failed to parse JSON data"
-    [$ERR_JSON_VALIDATION_FAILED]="JSON data validation failed"
-    [$ERR_DATE_CONVERSION_FAILED]="Failed to convert date format"
-    [$ERR_DATE_FORMAT_INVALID]="Invalid date format provided"
-    [$ERR_TIMEZONE_INVALID]="Invalid timezone specified"
-    [$ERR_CALENDAR_CREATION_FAILED]="Failed to create calendar event"
-    [$ERR_APPLESCRIPT_FAILED]="AppleScript execution failed"
-    [$ERR_FILE_NOT_FOUND]="Required file not found"
-    [$ERR_PERMISSION_DENIED]="Permission denied"
-    [$ERR_NETWORK_UNAVAILABLE]="Network connection unavailable"
-    [$ERR_DEPENDENCY_MISSING]="Required dependency is missing"
-)
+# Global variables for error handling
+LAST_ERROR_CODE=0
+LAST_ERROR_MESSAGE=""
+ERROR_LOGGER=""
 
-# User-friendly error messages
-declare -A USER_ERROR_MESSAGES=(
-    [$ERR_SUCCESS]="✅ Calendar event created successfully!"
-    [$ERR_GENERAL]="❌ An unexpected error occurred. Please try again."
-    [$ERR_API_KEY_MISSING]="🔑 Please check your Anthropic API key in PopClip settings."
-    [$ERR_API_REQUEST_FAILED]="🌐 Unable to connect to AI service. Check your internet connection."
-    [$ERR_API_RESPONSE_INVALID]="🤖 AI service returned an invalid response. Please try again."
-    [$ERR_API_RATE_LIMITED]="⏳ Too many requests. Please wait a moment and try again."
-    [$ERR_ZOOM_TOKEN_FAILED]="🔐 Unable to authenticate with Zoom. Check your Zoom credentials."
-    [$ERR_ZOOM_MEETING_FAILED]="📹 Failed to create Zoom meeting. Event will be created without meeting link."
-    [$ERR_ZOOM_CREDENTIALS_MISSING]="⚙️ Zoom integration requires API credentials in PopClip settings."
-    [$ERR_JSON_PARSE_FAILED]="📄 Unable to process AI response. Please try again."
-    [$ERR_JSON_VALIDATION_FAILED]="📝 AI response is missing required information. Please try again."
-    [$ERR_DATE_CONVERSION_FAILED]="📅 Unable to process date information. Please check your input."
-    [$ERR_DATE_FORMAT_INVALID]="🕐 Invalid date format detected. Please check your input."
-    [$ERR_TIMEZONE_INVALID]="🌍 Invalid timezone. Using system default."
-    [$ERR_CALENDAR_CREATION_FAILED]="📆 Unable to create calendar event. Check Calendar app permissions."
-    [$ERR_APPLESCRIPT_FAILED]="⚙️ System integration failed. Check Calendar app permissions."
-    [$ERR_FILE_NOT_FOUND]="📁 Required file is missing. Please reinstall the extension."
-    [$ERR_PERMISSION_DENIED]="🔒 Permission denied. Check app permissions in System Preferences."
-    [$ERR_NETWORK_UNAVAILABLE]="🌐 No internet connection available."
-    [$ERR_DEPENDENCY_MISSING]="🛠️ Required system component is missing."
-)
-
-# Recovery suggestions
-declare -A RECOVERY_SUGGESTIONS=(
-    [$ERR_API_KEY_MISSING]="1. Open PopClip preferences\n2. Find LLMCal extension settings\n3. Enter your Anthropic API key"
-    [$ERR_API_REQUEST_FAILED]="1. Check your internet connection\n2. Try again in a few moments\n3. Verify API key is correct"
-    [$ERR_API_RATE_LIMITED]="1. Wait 60 seconds before trying again\n2. Consider using fewer requests"
-    [$ERR_ZOOM_CREDENTIALS_MISSING]="1. Go to PopClip settings for LLMCal\n2. Enter Zoom API credentials\n3. Or remove 'zoom' from your text"
-    [$ERR_CALENDAR_CREATION_FAILED]="1. Open System Preferences → Security & Privacy\n2. Grant Calendar access to PopClip\n3. Restart PopClip"
-    [$ERR_NETWORK_UNAVAILABLE]="1. Check your internet connection\n2. Try again when connected"
-    [$ERR_DEPENDENCY_MISSING]="1. Ensure jq is installed: brew install jq\n2. Ensure Python 3 is available\n3. Reinstall the extension"
-)
-
-# Global error state
-ERROR_CODE=$ERR_SUCCESS
-ERROR_MESSAGE=""
-ERROR_CONTEXT=""
-
-# Logger reference (will be set by main script)
-LOGGER_FUNCTION=""
-
-# Set logger function
-set_error_logger() {
-    LOGGER_FUNCTION="$1"
-}
-
-# Enhanced logging function
-error_log() {
-    local message="$1"
-    local level="${2:-ERROR}"
-    
-    if [ -n "$LOGGER_FUNCTION" ] && command -v "$LOGGER_FUNCTION" > /dev/null 2>&1; then
-        "$LOGGER_FUNCTION" "$level" "$message"
-    else
-        echo "$(date '+%Y-%m-%d %H:%M:%S') [$level]: $message" >&2
-    fi
-}
-
-# Set error state
-set_error() {
-    local code="$1"
-    local context="${2:-}"
-    
-    ERROR_CODE="$code"
-    ERROR_MESSAGE="${ERROR_MESSAGES[$code]:-Unknown error}"
-    ERROR_CONTEXT="$context"
-    
-    error_log "Error $code: $ERROR_MESSAGE${context:+ ($context)}"
-}
-
-# Get error information
-get_error_code() {
-    echo "$ERROR_CODE"
-}
-
+# Get error message for code (using case statement instead of associative array)
 get_error_message() {
-    echo "$ERROR_MESSAGE"
-}
-
-get_user_error_message() {
-    echo "${USER_ERROR_MESSAGES[$ERROR_CODE]:-❌ An error occurred}"
-}
-
-get_error_context() {
-    echo "$ERROR_CONTEXT"
-}
-
-# Check if there's an error
-has_error() {
-    [ "$ERROR_CODE" -ne "$ERR_SUCCESS" ]
-}
-
-# Clear error state
-clear_error() {
-    ERROR_CODE=$ERR_SUCCESS
-    ERROR_MESSAGE=""
-    ERROR_CONTEXT=""
-}
-
-# Display user notification
-show_error_notification() {
-    local title="${1:-LLMCal Error}"
-    local user_message="$(get_user_error_message)"
-    
-    if command -v osascript > /dev/null 2>&1; then
-        osascript -e "display notification \"$user_message\" with title \"$title\""
-    else
-        error_log "Notification: $user_message" "INFO"
-    fi
-}
-
-# Show recovery suggestion
-show_recovery_suggestion() {
-    local suggestion="${RECOVERY_SUGGESTIONS[$ERROR_CODE]:-}"
-    
-    if [ -n "$suggestion" ]; then
-        error_log "Recovery suggestion:\n$suggestion" "INFO"
-        
-        if command -v osascript > /dev/null 2>&1; then
-            osascript -e "display dialog \"$suggestion\" with title \"How to fix this:\" buttons {\"OK\"} default button \"OK\""
-        fi
-    fi
-}
-
-# Comprehensive error handler
-handle_error() {
     local code="$1"
+    case "$code" in
+        $ERR_SUCCESS) echo "Operation completed successfully" ;;
+        $ERR_GENERAL) echo "General error occurred" ;;
+        $ERR_API_KEY_MISSING) echo "Anthropic API key is missing or invalid" ;;
+        $ERR_API_REQUEST_FAILED) echo "Failed to send request to Anthropic API" ;;
+        $ERR_API_RESPONSE_INVALID) echo "Invalid response from Anthropic API" ;;
+        $ERR_API_RATE_LIMITED) echo "API rate limit exceeded" ;;
+        $ERR_ZOOM_TOKEN_FAILED) echo "Failed to obtain Zoom access token" ;;
+        $ERR_ZOOM_MEETING_FAILED) echo "Failed to create Zoom meeting" ;;
+        $ERR_ZOOM_CREDENTIALS_MISSING) echo "Zoom credentials are missing" ;;
+        $ERR_JSON_PARSE_FAILED) echo "Failed to parse JSON data" ;;
+        $ERR_JSON_VALIDATION_FAILED) echo "JSON validation failed" ;;
+        $ERR_DATE_CONVERSION_FAILED) echo "Failed to convert date format" ;;
+        $ERR_DATE_FORMAT_INVALID) echo "Invalid date format" ;;
+        $ERR_TIMEZONE_INVALID) echo "Invalid timezone specified" ;;
+        $ERR_CALENDAR_CREATION_FAILED) echo "Failed to create calendar event" ;;
+        $ERR_APPLESCRIPT_FAILED) echo "AppleScript execution failed" ;;
+        $ERR_FILE_NOT_FOUND) echo "File not found" ;;
+        $ERR_PERMISSION_DENIED) echo "Permission denied" ;;
+        $ERR_NETWORK_UNAVAILABLE) echo "Network connection unavailable" ;;
+        $ERR_DEPENDENCY_MISSING) echo "Required dependency is missing" ;;
+        *) echo "Unknown error (code: $code)" ;;
+    esac
+}
+
+# Set error logger function
+set_error_logger() {
+    ERROR_LOGGER="$1"
+}
+
+# Log error using the configured logger
+log_error() {
+    local message="$1"
+    if [ -n "$ERROR_LOGGER" ] && [ "$(type -t $ERROR_LOGGER)" = "function" ]; then
+        $ERROR_LOGGER "ERROR" "$message"
+    else
+        echo "ERROR: $message" >&2
+    fi
+}
+
+# Handle error with optional recovery
+handle_error() {
+    local error_code="$1"
     local context="${2:-}"
-    local show_notification="${3:-true}"
-    local show_recovery="${4:-false}"
+    local show_notification="${3:-false}"
+    local attempt_recovery="${4:-false}"
     
-    set_error "$code" "$context"
+    LAST_ERROR_CODE="$error_code"
+    LAST_ERROR_MESSAGE=$(get_error_message "$error_code")
+    
+    if [ -n "$context" ]; then
+        LAST_ERROR_MESSAGE="$LAST_ERROR_MESSAGE: $context"
+    fi
+    
+    log_error "$LAST_ERROR_MESSAGE"
     
     if [ "$show_notification" = "true" ]; then
-        show_error_notification
+        show_error_notification "$LAST_ERROR_MESSAGE"
     fi
     
-    if [ "$show_recovery" = "true" ]; then
-        show_recovery_suggestion
+    if [ "$attempt_recovery" = "true" ]; then
+        attempt_error_recovery "$error_code"
     fi
     
-    return "$code"
+    return "$error_code"
 }
 
-# Retry mechanism
-retry_operation() {
-    local operation="$1"
-    local max_attempts="${2:-3}"
-    local delay="${3:-2}"
-    local attempt=1
+# Get last error code
+get_error_code() {
+    echo "$LAST_ERROR_CODE"
+}
+
+# Get last error message
+get_error_message_last() {
+    echo "$LAST_ERROR_MESSAGE"
+}
+
+# Show error notification to user
+show_error_notification() {
+    local message="${1:-$LAST_ERROR_MESSAGE}"
+    local title="${2:-LLMCal Error}"
     
-    while [ $attempt -le $max_attempts ]; do
-        error_log "Attempting $operation (try $attempt/$max_attempts)" "INFO"
-        
-        if eval "$operation"; then
-            error_log "$operation succeeded on attempt $attempt" "INFO"
-            return $ERR_SUCCESS
-        fi
-        
-        if [ $attempt -lt $max_attempts ]; then
-            error_log "$operation failed on attempt $attempt, retrying in ${delay}s..." "WARN"
-            sleep "$delay"
-        else
-            error_log "$operation failed after $max_attempts attempts" "ERROR"
-            return $ERR_GENERAL
-        fi
-        
-        attempt=$((attempt + 1))
-    done
+    osascript -e "display notification \"$message\" with title \"$title\"" 2>/dev/null || true
 }
 
-# Validate dependencies
+# Show error notification with current message
+show_error_notification_with_message() {
+    show_error_notification "$LAST_ERROR_MESSAGE"
+}
+
+# Attempt automatic error recovery
+attempt_error_recovery() {
+    local error_code="$1"
+    
+    case "$error_code" in
+        $ERR_NETWORK_UNAVAILABLE)
+            log_error "Attempting network recovery..."
+            sleep 2
+            if ping -c 1 google.com &>/dev/null; then
+                log_error "Network connection restored"
+                return 0
+            fi
+            ;;
+        $ERR_API_RATE_LIMITED)
+            log_error "Rate limited, waiting before retry..."
+            sleep 5
+            return 0
+            ;;
+        $ERR_DEPENDENCY_MISSING)
+            log_error "Checking for missing dependencies..."
+            validate_dependencies
+            ;;
+    esac
+    
+    return 1
+}
+
+# Validate required dependencies
 validate_dependencies() {
-    local missing_deps=()
+    local missing_deps=""
     
-    # Check for required commands
-    local required_commands=("curl" "jq" "python3" "osascript" "date")
-    
-    for cmd in "${required_commands[@]}"; do
-        if ! command -v "$cmd" > /dev/null 2>&1; then
-            missing_deps+=("$cmd")
-        fi
-    done
-    
-    if [ ${#missing_deps[@]} -gt 0 ]; then
-        set_error $ERR_DEPENDENCY_MISSING "Missing: ${missing_deps[*]}"
-        return $ERR_DEPENDENCY_MISSING
+    # Check for jq
+    if ! command -v jq &>/dev/null; then
+        missing_deps="$missing_deps jq"
     fi
     
-    return $ERR_SUCCESS
+    # Check for osascript (should always be present on macOS)
+    if ! command -v osascript &>/dev/null; then
+        missing_deps="$missing_deps osascript"
+    fi
+    
+    # Check for curl
+    if ! command -v curl &>/dev/null; then
+        missing_deps="$missing_deps curl"
+    fi
+    
+    if [ -n "$missing_deps" ]; then
+        handle_error "$ERR_DEPENDENCY_MISSING" "Missing:$missing_deps"
+        return "$ERR_DEPENDENCY_MISSING"
+    fi
+    
+    return "$ERR_SUCCESS"
 }
 
-# Validate API key
-validate_api_key() {
-    local api_key="$1"
+# Show recovery suggestion to user
+show_recovery_suggestion() {
+    local suggestion=""
     
-    if [ -z "$api_key" ]; then
-        set_error $ERR_API_KEY_MISSING "API key is empty"
-        return $ERR_API_KEY_MISSING
+    case "$LAST_ERROR_CODE" in
+        $ERR_API_KEY_MISSING)
+            suggestion="Please configure your Anthropic API key in PopClip preferences"
+            ;;
+        $ERR_NETWORK_UNAVAILABLE)
+            suggestion="Please check your internet connection and try again"
+            ;;
+        $ERR_DEPENDENCY_MISSING)
+            suggestion="Please install required dependencies: brew install jq"
+            ;;
+        $ERR_CALENDAR_CREATION_FAILED)
+            suggestion="Please ensure Calendar app has necessary permissions"
+            ;;
+        *)
+            suggestion="Please try again or check the logs for more details"
+            ;;
+    esac
+    
+    if [ -n "$suggestion" ]; then
+        osascript -e "display dialog \"$suggestion\" buttons {\"OK\"} default button 1 with title \"LLMCal - Recovery Suggestion\"" 2>/dev/null || true
     fi
-    
-    # Check API key format (Anthropic keys start with 'sk-ant-')
-    if [[ ! "$api_key" =~ ^sk-ant- ]]; then
-        set_error $ERR_API_KEY_MISSING "Invalid API key format"
-        return $ERR_API_KEY_MISSING
-    fi
-    
-    return $ERR_SUCCESS
 }
 
-# Network connectivity check
-check_network() {
-    if ! curl -s --connect-timeout 5 https://www.google.com > /dev/null 2>&1; then
-        set_error $ERR_NETWORK_UNAVAILABLE "Unable to reach external services"
-        return $ERR_NETWORK_UNAVAILABLE
-    fi
+# Create error report for debugging
+create_error_report() {
+    local report_file="${1:-$HOME/Library/Logs/LLMCal/error_report_$(date +%Y%m%d_%H%M%S).txt}"
+    local report_dir
+    report_dir=$(dirname "$report_file")
+    mkdir -p "$report_dir"
     
-    return $ERR_SUCCESS
+    {
+        echo "LLMCal Error Report"
+        echo "=================="
+        echo "Date: $(date)"
+        echo "Error Code: $LAST_ERROR_CODE"
+        echo "Error Message: $LAST_ERROR_MESSAGE"
+        echo ""
+        echo "Environment:"
+        echo "OS Version: $(sw_vers -productVersion 2>/dev/null || echo 'Unknown')"
+        echo "Bash Version: $BASH_VERSION"
+        echo ""
+        echo "Dependencies:"
+        echo "jq: $(command -v jq &>/dev/null && jq --version || echo 'Not installed')"
+        echo "curl: $(command -v curl &>/dev/null && curl --version | head -1 || echo 'Not installed')"
+    } > "$report_file"
+    
+    echo "$report_file"
 }
 
-# Graceful shutdown
+# Graceful exit function
 graceful_exit() {
-    local exit_code="${1:-$ERROR_CODE}"
+    local exit_code="${1:-$LAST_ERROR_CODE}"
     
-    if has_error; then
-        error_log "Exiting with error code $exit_code: $(get_error_message)"
-        show_error_notification
+    if [ "$exit_code" -ne 0 ]; then
+        log_error "Exiting with error code: $exit_code"
     fi
-    
-    # Cleanup temporary files
-    cleanup_temp_files
     
     exit "$exit_code"
 }
 
-# Cleanup temporary files
-cleanup_temp_files() {
-    # Remove any temporary files created by the application
-    find /tmp -name "llmcal_*" -mtime +1 -delete 2>/dev/null || true
-    find /tmp -name "process_event.py" -delete 2>/dev/null || true
+# Validate API key format
+validate_api_key() {
+    local api_key="$1"
+    
+    if [ -z "$api_key" ]; then
+        handle_error "$ERR_API_KEY_MISSING" "API key not provided"
+        return "$ERR_API_KEY_MISSING"
+    fi
+    
+    # Check for basic API key format (sk-ant-api03-...)
+    if [[ ! "$api_key" =~ ^sk-ant-api03- ]]; then
+        handle_error "$ERR_API_KEY_MISSING" "Invalid API key format"
+        return "$ERR_API_KEY_MISSING"
+    fi
+    
+    return "$ERR_SUCCESS"
 }
 
-# Emergency recovery mode
-emergency_recovery() {
-    error_log "Entering emergency recovery mode" "WARN"
-    
-    # Clear any partial state
-    cleanup_temp_files
-    
-    # Reset error state
-    clear_error
-    
-    # Show recovery dialog
-    if command -v osascript > /dev/null 2>&1; then
-        osascript -e 'display dialog "LLMCal encountered an issue and has been reset. Please try your request again." with title "LLMCal Recovery" buttons {"OK"} default button "OK"'
+# Check network connectivity
+check_network() {
+    # Check if we can reach a known endpoint
+    if ! curl -s --head --connect-timeout 5 https://api.anthropic.com > /dev/null 2>&1; then
+        handle_error "$ERR_NETWORK_UNAVAILABLE" "Cannot connect to API endpoint"
+        return "$ERR_NETWORK_UNAVAILABLE"
     fi
+    
+    return "$ERR_SUCCESS"
 }
 
 # Export functions for use in other modules
-export -f set_error get_error_code get_error_message get_user_error_message
-export -f has_error clear_error handle_error show_error_notification
-export -f retry_operation validate_dependencies validate_api_key check_network
-export -f graceful_exit emergency_recovery error_log set_error_logger
+export -f get_error_message
+export -f handle_error
+export -f show_error_notification
+export -f validate_dependencies
+export -f graceful_exit
+export -f validate_api_key
+export -f check_network

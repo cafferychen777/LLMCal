@@ -4,19 +4,27 @@
 # Handles all API communications with Anthropic Claude API
 
 # Source error handler
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/error_handler.sh"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # API Configuration
 readonly ANTHROPIC_API_URL="https://api.anthropic.com/v1/messages"
 readonly ANTHROPIC_API_VERSION="2023-06-01"
-readonly DEFAULT_MODEL="claude-3-5-haiku-20241022"
+# Get user-selected model or use default
+get_selected_model() {
+    local selected_model="${POPCLIP_OPTION_CLAUDE_MODEL:-claude-sonnet-4-20250514}"
+    api_log "INFO" "Using model: $selected_model"
+    echo "$selected_model"
+}
 readonly DEFAULT_MAX_TOKENS=1024
 readonly REQUEST_TIMEOUT=30
 readonly MAX_RETRIES=3
 
-# Cache for API responses (optional optimization)
-declare -A API_RESPONSE_CACHE
+# Cache directory for API responses (optional optimization)
+# Using filesystem-based cache instead of associative array for Bash 3.2 compatibility
+API_CACHE_DIR="/tmp/llmcal_api_cache"
+mkdir -p "$API_CACHE_DIR" 2>/dev/null || true
 
 # Set API client logger
 set_error_logger "api_log"
@@ -57,7 +65,7 @@ make_api_request_internal() {
     local api_key="$1"
     local content="$2"
     local max_tokens="${3:-$DEFAULT_MAX_TOKENS}"
-    local model="${4:-$DEFAULT_MODEL}"
+    local model="${4:-$(get_selected_model)}"
     
     # Prepare JSON payload
     local json_payload
@@ -176,7 +184,7 @@ make_anthropic_request() {
     local api_key="$1"
     local content="$2"
     local max_tokens="${3:-$DEFAULT_MAX_TOKENS}"
-    local model="${4:-$DEFAULT_MODEL}"
+    local model="${4:-$(get_selected_model)}"
     
     api_log "INFO" "Starting Anthropic API request"
     
@@ -200,10 +208,11 @@ make_anthropic_request() {
     local cache_key
     cache_key=$(echo "$content" | shasum -a 256 | cut -d' ' -f1)
     
-    # Check cache first (optional optimization)
-    if [ -n "${API_RESPONSE_CACHE[$cache_key]:-}" ]; then
+    # Check cache first (using file-based cache)
+    local cache_file="$API_CACHE_DIR/$cache_key"
+    if [ -f "$cache_file" ]; then
         api_log "INFO" "Using cached response"
-        echo "${API_RESPONSE_CACHE[$cache_key]}"
+        cat "$cache_file"
         return $ERR_SUCCESS
     fi
     
@@ -219,8 +228,8 @@ make_anthropic_request() {
         local result=$?
         
         if [ $result -eq $ERR_SUCCESS ]; then
-            # Cache successful response
-            API_RESPONSE_CACHE[$cache_key]="$response"
+            # Cache successful response (using file-based cache)
+            echo "$response" > "$cache_file"
             echo "$response"
             return $ERR_SUCCESS
         fi
@@ -256,30 +265,84 @@ create_calendar_event_request() {
     local tomorrow="$3"
     
     cat << EOF
-Convert text to calendar event: '$text'
-Use these dates:
+Convert this text to a calendar event: '$text'
+
+Reference dates:
 - Today: $today
 - Tomorrow: $tomorrow
 
-Return only JSON with the following structure:
+CRITICAL: Analyze the text content and select the most appropriate calendar_type based on urgency, importance, and content type.
+
+Return ONLY valid JSON in this exact format:
 {
     "title": "Event title",
     "start_time": "$tomorrow 15:00",
     "end_time": "$tomorrow 16:00",
+    "allday": false,
     "description": "Event description",
-    "location": "meeting place or address or 'online' for virtual meetings",
-    "url": "meeting link for virtual meetings (if applicable)",
+    "location": "location or 'online'",
+    "url": "meeting link if applicable",
+    "status": "confirmed",
+    "priority": "high|medium|low",
+    "calendar_type": "MUST BE ONE OF: high_priority, medium_priority, low_priority, work, personal, deadlines, meetings",
     "alerts": [5, 15, 30, 1440],
-    "recurrence": "daily|weekly|biweekly|monthly|monthly_last_friday|none",
-    "attendees": ["email1@example.com", "email2@example.com"]
+    "recurrence": "none|weekly|weekly_tue_thu|biweekly|monthly",
+    "excluded_dates": [],
+    "attendees": []
 }
 
-Important:
-- Use proper date format: YYYY-MM-DD HH:MM
-- For location: use specific address, "zoom", "online", or meeting room name
-- Include meeting URL only if it's a virtual meeting
-- Set alerts in minutes before event
-- Only include attendees if email addresses are mentioned in the text
+CALENDAR TYPE SELECTION RULES - You MUST choose calendar_type based on content analysis:
+
+1. "high_priority": Use when text contains:
+   - Words like: urgent, emergency, critical, ASAP, important, must, required, mandatory
+   - CEO/executive requests, critical issues, emergencies
+   - Chinese: 紧急, 重要, 必须, 立即, 马上, 危急
+
+2. "deadlines": Use when text contains:
+   - Explicit deadlines with dates/times
+   - Words like: deadline, due date, submission, expires, cutoff, last day
+   - Chinese: 截止, 期限, 到期, 最后, 提交日期
+
+3. "meetings": Use when text contains:
+   - Words like: meeting, conference, discussion, call, presentation, interview
+   - Multiple attendees mentioned
+   - Chinese: 会议, 例会, 讨论, 研讨会, 面试
+
+4. "work": Use when text contains:
+   - Work-related tasks without urgency or meetings
+   - Words like: project, client, review, report, task, office
+   - Chinese: 工作, 项目, 客户, 报告, 办公
+
+5. "personal": Use when text contains:
+   - Personal activities, family, friends
+   - Words like: birthday, vacation, doctor, dinner, personal
+   - Chinese: 家庭, 朋友, 生日, 私人, 看病
+
+6. "low_priority": Use when text contains:
+   - Optional or tentative language
+   - Words like: optional, maybe, if possible, could, might
+   - Chinese: 可选, 有空, 如果, 也许
+
+7. "medium_priority": Default for regular tasks without specific urgency
+
+OTHER RULES:
+- Date format: YYYY-MM-DD HH:MM
+- For all-day events: set "allday": true, use YYYY-MM-DD format
+- Status: "confirmed", "tentative", "cancelled", or "none"
+- Priority: based on urgency (high/medium/low)
+- Alerts in minutes (1440 = 1 day)
+
+RECURRENCE RULES - IMPORTANT:
+- "none": no recurrence
+- "daily": every day
+- "weekly": once a week on the same day
+- "weekly_mon_wed_fri": Monday, Wednesday, Friday
+- "weekly_tue_thu": Tuesday and Thursday (for classes like TTh)
+- "biweekly": every two weeks
+- "monthly": monthly on the same date
+- "monthly_last_friday": last Friday of each month
+- For courses with "TTh" or "MWF" schedule, use the appropriate weekly pattern
+- For Chinese "每二和周四" or "周二周四", use "weekly_tue_thu"
 EOF
 }
 
@@ -311,13 +374,13 @@ process_calendar_event() {
 
 # Clear API response cache
 clear_api_cache() {
-    API_RESPONSE_CACHE=()
+    rm -f "$API_CACHE_DIR"/* 2>/dev/null || true
     api_log "INFO" "API response cache cleared"
 }
 
 # Get cache statistics
 get_cache_stats() {
-    local cache_size=${#API_RESPONSE_CACHE[@]}
+    local cache_size=$(find "$API_CACHE_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
     echo "API Cache: $cache_size entries"
     api_log "INFO" "API cache contains $cache_size entries"
 }

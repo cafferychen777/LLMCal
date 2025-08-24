@@ -4,7 +4,9 @@
 # Provides secure logging with sanitization of sensitive data
 
 # Source security utilities
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 source "$SCRIPT_DIR/security.sh"
 
 # Default log configuration
@@ -14,14 +16,18 @@ LOG_LEVEL="${LOG_LEVEL:-INFO}"
 MAX_LOG_SIZE="${MAX_LOG_SIZE:-10485760}"  # 10MB
 MAX_LOG_FILES="${MAX_LOG_FILES:-5}"
 
-# Log levels
-declare -A LOG_LEVELS=(
-    ["DEBUG"]=0
-    ["INFO"]=1
-    ["WARN"]=2
-    ["ERROR"]=3
-    ["CRITICAL"]=4
-)
+# Get numeric log level (Bash 3.2 compatible)
+get_log_level_value() {
+    local level="$1"
+    case "$level" in
+        "DEBUG") echo 0 ;;
+        "INFO") echo 1 ;;
+        "WARN") echo 2 ;;
+        "ERROR") echo 3 ;;
+        "CRITICAL") echo 4 ;;
+        *) echo 1 ;;  # Default to INFO
+    esac
+}
 
 # Initialize logging
 init_logging() {
@@ -42,8 +48,8 @@ init_logging() {
 # Check if log level should be written
 should_log() {
     local level="$1"
-    local current_level_num=${LOG_LEVELS[$LOG_LEVEL]}
-    local level_num=${LOG_LEVELS[$level]}
+    local current_level_num=$(get_log_level_value "$LOG_LEVEL")
+    local level_num=$(get_log_level_value "$level")
     
     [ "$level_num" -ge "$current_level_num" ]
 }

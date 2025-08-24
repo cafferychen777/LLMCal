@@ -40,6 +40,8 @@ config/credentials.json
 test_credentials.sh
 local_test.sh
 *_secrets.*
+/tmp/test_*.sh
+test_*.sh
 
 # Backup files that might contain sensitive data
 *.bak
@@ -55,3 +57,4 @@ yarn-error.log*
 .vite
 __pycache__/
 *.py[cod]
+LLMCalApp/.build/

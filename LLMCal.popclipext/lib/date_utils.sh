@@ -4,8 +4,9 @@
 # Handles all date/time processing with improved timezone support
 
 # Source error handler
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/error_handler.sh"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # Date format constants
 readonly DATE_FORMAT_INPUT="%Y-%m-%d %H:%M:%S"

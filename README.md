@@ -1,6 +1,6 @@
 <div align="center">
 
-**[English](#english)** | **[中文](#chinese)** | **[Español](#español)**
+**[English](#english)** | **[中文](#chinese)** | **[Español](#español)** | **[Français](#français)** | **[Deutsch](#deutsch)** | **[日本語](#japanese)**
 
 </div>
 
@@ -100,13 +100,20 @@ LLMCal is a powerful PopClip extension that uses AI to convert selected text int
 "Weekly 1:1 with manager every Thursday 10am PST (my time 1pm EST), 30 minutes, Teams link: https://teams.microsoft.com/l/123"
 ```
 
-## Requirements
+## Technical Requirements
 
-- macOS 10.15 or later
-- PopClip 2022.5 or later
-- Anthropic API key
-- Calendar.app access permission
-- Internet connection
+| Component | Minimum Requirement | Recommended |
+|-----------|---------------------|-------------|
+| **macOS** | 10.15 Catalina | 11.0 Big Sur or later |
+| **PopClip** | 2022.5 | Latest version |
+| **Memory** | 256 MB RAM | 512 MB RAM |
+| **Network** | Active internet connection | Stable broadband |
+| **Calendar** | Calendar.app access | Google Calendar sync |
+
+### System Dependencies
+- **Anthropic API Key** - Required for AI processing
+- **Calendar Permissions** - System-level calendar access
+- **Network Access** - For API communication and meeting link validation
 
 ## Google Calendar Integration
 
@@ -139,13 +146,73 @@ While LLMCal currently works directly with Apple Calendar, you can still use it 
 - All natural language processing is done through Claude AI
 - The extension only requires necessary permissions: text selection and calendar access
 
+## Quick Start Guide
+
+### ⚡ 5-Minute Setup
+1. **Download & Install PopClip** → [www.popclip.app](https://www.popclip.app/)
+2. **Get API Key** → [console.anthropic.com](https://console.anthropic.com/)
+3. **Install LLMCal** → Download from [releases](https://github.com/cafferychen777/LLMCal/releases)
+4. **Configure** → Enter API key in PopClip preferences
+5. **Test** → Select text and click calendar icon
+
+### 🎯 First Event
+Try selecting this text: *"Team standup tomorrow at 9am for 30 minutes"*
+
+## Advanced Configuration
+
+### Environment Variables (Optional)
+```bash
+# Create ~/.llmcal/config
+ANTHROPIC_API_KEY=your_key_here
+DEFAULT_TIMEZONE=America/New_York
+LOG_LEVEL=info
+```
+
+### Language Settings
+LLMCal automatically detects your system language and supports:
+- 🇺🇸 English
+- 🇨🇳 中文 (Chinese)
+- 🇪🇸 Español (Spanish)
+- 🇫🇷 Français (French)
+- 🇩🇪 Deutsch (German)
+- 🇯🇵 日本語 (Japanese)
+
 ## Troubleshooting
 
-If you encounter any issues:
-1. Make sure your Anthropic API key is correctly entered in the extension settings
-2. Check that you've granted calendar access permissions to PopClip
-3. Ensure your text selection includes all necessary event details
-4. Verify your internet connection
+### Common Issues
+
+#### 🔑 API Key Problems
+**Issue**: "Invalid API key" error
+**Solution**: 
+1. Verify your API key at [console.anthropic.com](https://console.anthropic.com/)
+2. Check for extra spaces or characters
+3. Restart PopClip after updating
+
+#### 📅 Calendar Access
+**Issue**: Events not appearing in calendar
+**Solution**:
+1. System Settings → Privacy & Security → Full Disk Access → Enable PopClip
+2. Restart Calendar.app
+3. Check if Calendar.app has proper permissions
+
+#### 🌐 Network Issues
+**Issue**: "API request failed" error
+**Solution**:
+1. Verify internet connection
+2. Check firewall settings
+3. Try a different network if available
+
+#### 📱 PopClip Not Appearing
+**Issue**: PopClip menu doesn't show when selecting text
+**Solution**:
+1. Ensure PopClip is running (menu bar icon visible)
+2. System Settings → Accessibility → Enable PopClip
+3. Try selecting text again or restart PopClip
+
+### Getting Help
+- **Documentation**: Visit [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- **Issues**: Report bugs on [GitHub Issues](https://github.com/cafferychen777/LLMCal/issues)
+- **Discussions**: Join [GitHub Discussions](https://github.com/cafferychen777/LLMCal/discussions)
 
 ## Support
 
@@ -306,6 +373,8 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 
 本项目采用带有 Commons Clause 的 GNU Affero 通用公共许可证第3版 (AGPLv3) 授权 - 详见 [LICENSE](LICENSE) 文件。该许可证确保软件保持开源的同时防止商业利用。任何修改或衍生作品也必须在相同的许可条款下发布。
 
+---
+
 # Español
 
 <div align="center">
@@ -456,3 +525,120 @@ Para problemas, solicitudes de funciones o contribuciones, visita el [Repositori
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia Pública General de GNU Affero Versión 3 (AGPLv3) con Cláusula Commons - consulta el archivo [LICENSE](LICENSE) para más detalles. Esta licencia asegura que el software permanezca de código abierto mientras protege contra la explotación comercial. Cualquier modificación o trabajo derivado también debe ser publicado bajo los mismos términos de licencia.
+
+---
+
+# Français
+
+<div align="center">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - Créateur d'événements de calendrier alimenté par IA pour PopClip</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/Démo-Voir-brightgreen" alt="Démo en direct">
+  </a>
+</div>
+
+LLMCal est une extension PopClip puissante qui utilise l'IA pour convertir le texte sélectionné en événements de calendrier. Elle comprend les descriptions en langage naturel et crée automatiquement des événements avec des titres, des heures, des lieux, des liens de réunion et des rappels appropriés.
+
+## Caractéristiques
+
+- 🤖 **Alimenté par IA** : Utilise Claude AI pour comprendre les descriptions d'événements en langage naturel
+- ⚡️ **Création rapide** : Créez des événements de calendrier en un seul clic
+- 🌐 **Liens de réunion** : Extrait et ajoute automatiquement les URL de réunion (Zoom, Teams, Google Meet, etc.)
+- 📍 **Support de lieu** : Gère les lieux de réunion physiques et virtuels
+- ⏰ **Rappels intelligents** : Configure les alertes d'événements basées sur les descriptions de texte
+- 🔄 **Événements récurrents** : Prend en charge divers modèles d'événements récurrents
+
+## Installation
+
+1. **Installez PopClip** depuis [www.popclip.app](https://www.popclip.app/)
+2. **Obtenez une clé API** Anthropic sur [console.anthropic.com](https://console.anthropic.com/)
+3. **Téléchargez LLMCal** depuis les [versions](https://github.com/cafferychen777/LLMCal/releases)
+4. **Configurez** votre clé API dans les préférences PopClip
+
+## Utilisation
+
+Sélectionnez du texte décrivant un événement :
+*"Réunion d'équipe demain à 14h pendant 1 heure"*
+
+Puis cliquez sur l'icône calendrier dans le menu PopClip.
+
+---
+
+# Deutsch
+
+<div align="center">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - KI-gestützter Kalenderereignis-Creator für PopClip</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/Demo-Ansehen-brightgreen" alt="Live-Demo">
+  </a>
+</div>
+
+LLMCal ist eine leistungsstarke PopClip-Erweiterung, die KI verwendet, um ausgewählten Text in Kalenderereignisse umzuwandeln. Sie versteht natürlichsprachige Beschreibungen und erstellt automatisch Ereignisse mit angemessenen Titeln, Zeiten, Orten, Meeting-Links und Erinnerungen.
+
+## Funktionen
+
+- 🤖 **KI-gestützt** : Verwendet Claude AI zum Verstehen natürlichsprachiger Ereignisbeschreibungen
+- ⚡️ **Schnelle Erstellung** : Erstellen Sie Kalenderereignisse mit einem Klick
+- 🌐 **Meeting-Links** : Extrahiert und fügt automatisch Meeting-URLs hinzu (Zoom, Teams, Google Meet, etc.)
+- 📍 **Ortsunterstützung** : Verarbeitet sowohl physische als auch virtuelle Meeting-Orte
+- ⏰ **Intelligente Erinnerungen** : Richtet Ereignisalarme basierend auf Textbeschreibungen ein
+- 🔄 **Wiederkehrende Ereignisse** : Unterstützt verschiedene wiederkehrende Ereignismuster
+
+## Installation
+
+1. **PopClip installieren** von [www.popclip.app](https://www.popclip.app/)
+2. **API-Schlüssel erhalten** von Anthropic bei [console.anthropic.com](https://console.anthropic.com/)
+3. **LLMCal herunterladen** von den [Releases](https://github.com/cafferychen777/LLMCal/releases)
+4. **Konfigurieren** Sie Ihren API-Schlüssel in den PopClip-Einstellungen
+
+## Verwendung
+
+Wählen Sie Text aus, der ein Ereignis beschreibt:
+*"Team-Meeting morgen um 14 Uhr für 1 Stunde"*
+
+Klicken Sie dann auf das Kalendersymbol im PopClip-Menü.
+
+---
+
+# 日本語
+
+<div align="center">
+  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
+  
+  <h1>LLMCal - PopClip用のAI搭載カレンダーイベントクリエーター</h1>
+  
+  <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
+    <img src="https://img.shields.io/badge/デモ-表示-brightgreen" alt="ライブデモ">
+  </a>
+</div>
+
+LLMCalは、AIを使用して選択されたテキストをカレンダーイベントに変換する強力なPopClip拡張機能です。自然言語の説明を理解し、適切なタイトル、時間、場所、会議リンク、リマインダーでイベントを自動作成します。
+
+## 特徴
+
+- 🤖 **AI搭載** : Claude AIを使用して自然言語のイベント説明を理解
+- ⚡️ **高速作成** : ワンクリックでカレンダーイベントを作成
+- 🌐 **会議リンク** : 会議URL（Zoom、Teams、Google Meetなど）を自動抽出・追加
+- 📍 **場所サポート** : 物理的および仮想的な会議場所の両方を処理
+- ⏰ **スマートリマインダー** : テキスト説明に基づいてイベントアラートを設定
+- 🔄 **定期イベント** : さまざまな定期イベントパターンをサポート
+
+## インストール
+
+1. **PopClipをインストール** [www.popclip.app](https://www.popclip.app/)から
+2. **APIキーを取得** Anthropicの[console.anthropic.com](https://console.anthropic.com/)で
+3. **LLMCalをダウンロード** [リリース](https://github.com/cafferychen777/LLMCal/releases)から
+4. **設定** PopClip設定でAPIキーを入力
+
+## 使用方法
+
+イベントを説明するテキストを選択：
+*"明日午後2時からチームミーティング、1時間"*
+
+PopClipメニューのカレンダーアイコンをクリックします。

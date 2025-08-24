@@ -1,0 +1,308 @@
+name: 🧪 Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  NODE_VERSION: '18'
+  FORCE_COLOR: 1
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, macos-12]
+        node-version: ['16', '18', '20']
+        
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔧 Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: |
+        npm ci
+        # Install additional test dependencies
+        npm install --save-dev jest-github-actions-reporter
+
+    - name: 🔍 Lint shell scripts
+      run: |
+        # Install shellcheck if not available
+        if ! command -v shellcheck &> /dev/null; then
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            brew install shellcheck
+          else
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          fi
+        fi
+        
+        # Run shellcheck on all shell scripts
+        find . -name "*.sh" -not -path "./node_modules/*" -not -path "./venv/*" | xargs shellcheck -x
+
+    - name: 🧪 Run unit tests
+      run: npm run test:unit
+      env:
+        NODE_ENV: test
+        CI: true
+
+    - name: 🔗 Run integration tests
+      run: npm run test:integration
+      env:
+        NODE_ENV: test
+        CI: true
+
+    - name: 📊 Run tests with coverage
+      run: npm run test:coverage
+      env:
+        NODE_ENV: test
+        CI: true
+        JEST_JUNIT_OUTPUT_DIR: ./coverage
+        JEST_JUNIT_OUTPUT_NAME: junit.xml
+
+    - name: 📈 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.os == 'macos-latest' && matrix.node-version == '18'
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: llmcal-coverage
+        fail_ci_if_error: false
+
+    - name: 📋 Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.os }}-node${{ matrix.node-version }}
+        path: |
+          coverage/
+          junit.xml
+        retention-days: 7
+
+    - name: 📊 Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results (${{ matrix.os }}, Node ${{ matrix.node-version }})
+        path: coverage/junit.xml
+        reporter: jest-junit
+        fail-on-error: false
+
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: macos-latest
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Run npm audit
+      run: npm audit --audit-level moderate
+
+    - name: 🕵️ Scan for secrets
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: main
+        head: HEAD
+        extra_args: --debug --only-verified
+
+  performance-test:
+    name: 🚀 Performance Tests
+    runs-on: macos-latest
+    if: github.event_name == 'push' || github.event_name == 'schedule'
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: ⚡ Run performance benchmarks
+      run: |
+        # Create performance test script
+        cat > performance_test.js << 'EOF'
+        const { exec } = require('child_process');
+        const { promisify } = require('util');
+        const execAsync = promisify(exec);
+
+        async function runPerformanceTests() {
+          console.log('🚀 Running performance benchmarks...');
+          
+          const tests = [
+            {
+              name: 'Date Conversion Performance',
+              command: `for i in {1..100}; do date -j -f "%Y-%m-%d %H:%M:%S" "2024-01-15 15:30:00" "+%Y-%m-%d %H:%M:%S" > /dev/null; done`,
+              threshold: 5000 // 5 seconds
+            },
+            {
+              name: 'JSON Processing Performance', 
+              command: `for i in {1..50}; do echo '{"title":"test","start_time":"2024-01-15 15:00"}' | jq -r '.title' > /dev/null; done`,
+              threshold: 3000 // 3 seconds
+            }
+          ];
+
+          for (const test of tests) {
+            const startTime = Date.now();
+            try {
+              await execAsync(test.command);
+              const duration = Date.now() - startTime;
+              console.log(`✅ ${test.name}: ${duration}ms (threshold: ${test.threshold}ms)`);
+              
+              if (duration > test.threshold) {
+                console.error(`❌ Performance regression detected in ${test.name}`);
+                process.exit(1);
+              }
+            } catch (error) {
+              console.error(`❌ ${test.name} failed:`, error.message);
+              process.exit(1);
+            }
+          }
+          
+          console.log('🎉 All performance tests passed!');
+        }
+
+        runPerformanceTests();
+        EOF
+        
+        node performance_test.js
+
+  code-quality:
+    name: 📝 Code Quality
+    runs-on: macos-latest
+    
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Check for TODO/FIXME comments
+      run: |
+        echo "🔍 Scanning for TODO/FIXME comments..."
+        
+        # Count TODO and FIXME comments
+        TODO_COUNT=$(grep -r -i "todo\|fixme" --include="*.js" --include="*.sh" --include="*.md" . | wc -l | xargs)
+        
+        echo "Found $TODO_COUNT TODO/FIXME comments"
+        
+        if [ "$TODO_COUNT" -gt 20 ]; then
+          echo "⚠️ High number of TODO/FIXME comments found. Consider addressing some of them."
+        else
+          echo "✅ TODO/FIXME comment count is reasonable"
+        fi
+
+    - name: 📊 Analyze bundle size
+      run: |
+        echo "📊 Analyzing bundle size..."
+        
+        # Check PopClip extension size
+        BUNDLE_SIZE=$(du -sh LLMCal.popclipext | cut -f1)
+        echo "PopClip extension size: $BUNDLE_SIZE"
+        
+        # Check if any files are unusually large
+        echo "Largest files in extension:"
+        find LLMCal.popclipext -type f -exec du -h {} + | sort -hr | head -10
+
+    - name: 🔧 Validate configuration files
+      run: |
+        echo "🔧 Validating configuration files..."
+        
+        # Validate JSON files
+        for file in $(find . -name "*.json" -not -path "./node_modules/*" -not -path "./coverage/*"); do
+          echo "Validating $file..."
+          if ! jq empty "$file" 2>/dev/null; then
+            echo "❌ Invalid JSON in $file"
+            exit 1
+          fi
+        done
+        
+        echo "✅ All JSON files are valid"
+
+  notification:
+    name: 📢 Notify Results
+    runs-on: macos-latest
+    needs: [test, security-scan, performance-test, code-quality]
+    if: always()
+    
+    steps:
+    - name: 📊 Determine overall status
+      id: status
+      run: |
+        if [[ "${{ needs.test.result }}" == "success" && 
+              "${{ needs.security-scan.result }}" == "success" && 
+              ("${{ needs.performance-test.result }}" == "success" || "${{ needs.performance-test.result }}" == "skipped") &&
+              "${{ needs.code-quality.result }}" == "success" ]]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+          echo "message=All tests and checks passed! ✅" >> $GITHUB_OUTPUT
+        else
+          echo "status=failure" >> $GITHUB_OUTPUT
+          echo "message=Some tests or checks failed ❌" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 💬 Add status comment (PR only)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const status = '${{ steps.status.outputs.status }}';
+          const message = '${{ steps.status.outputs.message }}';
+          const emoji = status === 'success' ? '🎉' : '💥';
+          
+          const body = `${emoji} **Test Results Summary**
+          
+          ${message}
+          
+          **Test Details:**
+          - Unit & Integration Tests: ${{ needs.test.result }}
+          - Security Scan: ${{ needs.security-scan.result }}
+          - Performance Tests: ${{ needs.performance-test.result }}
+          - Code Quality: ${{ needs.code-quality.result }}
+          
+          View [detailed results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more information.`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });

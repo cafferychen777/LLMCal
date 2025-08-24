@@ -4,9 +4,9 @@
 # Handles Apple Calendar event creation via AppleScript
 
 # Source error handler and utilities
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/error_handler.sh"
-source "$SCRIPT_DIR/date_utils.sh"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # Calendar configuration
 readonly DEFAULT_CALENDAR="calendar 1"
@@ -74,6 +74,9 @@ convert_recurrence_pattern() {
     case "$recurrence" in
         "daily") echo "FREQ=DAILY;INTERVAL=1";;
         "weekly") echo "FREQ=WEEKLY;INTERVAL=1";;
+        "weekly_mon_wed_fri") echo "FREQ=WEEKLY;BYDAY=MO,WE,FR";;
+        "weekly_tue_thu") echo "FREQ=WEEKLY;BYDAY=TU,TH";;
+        "weekly_mon_tue_wed_thu_fri") echo "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR";;
         "biweekly") echo "FREQ=WEEKLY;INTERVAL=2";;
         "monthly") echo "FREQ=MONTHLY;INTERVAL=1";;
         "monthly_last_friday") echo "FREQ=MONTHLY;BYDAY=-1FR";;
@@ -168,7 +171,13 @@ create_applescript() {
     local alerts="$7"
     local recurrence="$8"
     local attendees="$9"
-    local calendar_name="${10:-$DEFAULT_CALENDAR}"
+    local calendar_name="${10:-}"
+    if [ -z "$calendar_name" ]; then
+        calendar_name="1"  # Default to calendar 1
+    fi
+    local allday="${11:-false}"
+    local status="${12:-confirmed}"
+    local excluded_dates="${13:-}"
     
     calendar_log "INFO" "Generating AppleScript for event creation"
     
@@ -189,7 +198,7 @@ tell application "Calendar"
 $(generate_date_script "$start_time" "startDate")
 $(generate_date_script "$end_time" "endDate")
     
-    tell $calendar_name
+    tell calendar "$calendar_name"
         set eventProps to {summary:"$escaped_title", start date:startDate, end date:endDate}
 EOF
 
@@ -216,6 +225,42 @@ EOF
         cat << EOF
         set eventProps to eventProps & {recurrence:"$recurrence_rule"}
 EOF
+    fi
+    
+    # Add all-day event property
+    if [ "$allday" = "true" ]; then
+        cat << EOF
+        set eventProps to eventProps & {allday event:true}
+EOF
+    fi
+    
+    # Add status property (Note: macOS Calendar app doesn't support status in AppleScript)
+    # Status is typically handled through calendar types or reminder flags
+    # Commenting out as AppleScript doesn't recognize status as a valid property
+    # if [ -n "$status" ] && [ "$status" != "confirmed" ]; then
+    #     cat << EOF
+    #     set eventProps to eventProps & {status:"$status"}
+    # EOF
+    # fi
+    
+    # Add excluded dates for recurring events
+    if [ -n "$excluded_dates" ] && [ -n "$recurrence_rule" ]; then
+        # Convert excluded dates to AppleScript date list
+        local excluded_dates_script=""
+        while IFS= read -r date; do
+            if [ -n "$date" ]; then
+                if [ -n "$excluded_dates_script" ]; then
+                    excluded_dates_script="$excluded_dates_script, "
+                fi
+                excluded_dates_script="${excluded_dates_script}date \"$date\""
+            fi
+        done <<< "$excluded_dates"
+        
+        if [ -n "$excluded_dates_script" ]; then
+            cat << EOF
+        set eventProps to eventProps & {excluded dates:{$excluded_dates_script}}
+EOF
+        fi
     fi
     
     # Create the event
@@ -261,11 +306,29 @@ execute_applescript() {
     echo "$script" > "$temp_script"
     
     # Execute with timeout and capture both output and error
-    if script_output=$(timeout $APPLESCRIPT_TIMEOUT osascript "$temp_script" 2>&1); then
-        exit_code=0
+    # Check if timeout is available (gtimeout on macOS with coreutils)
+    local timeout_cmd=""
+    if command -v gtimeout >/dev/null 2>&1; then
+        timeout_cmd="gtimeout $APPLESCRIPT_TIMEOUT"
+    elif command -v timeout >/dev/null 2>&1; then
+        timeout_cmd="timeout $APPLESCRIPT_TIMEOUT"
+    fi
+    
+    # Execute the script (with or without timeout)
+    if [ -n "$timeout_cmd" ]; then
+        if script_output=$($timeout_cmd osascript "$temp_script" 2>&1); then
+            exit_code=0
+        else
+            exit_code=$?
+            script_error="$script_output"
+        fi
     else
-        exit_code=$?
-        script_error="$script_output"
+        if script_output=$(osascript "$temp_script" 2>&1); then
+            exit_code=0
+        else
+            exit_code=$?
+            script_error="$script_output"
+        fi
     fi
     
     # Clean up temp file
@@ -315,7 +378,10 @@ create_calendar_event() {
     local alerts="$7"
     local recurrence="$8"
     local attendees="$9"
-    local calendar_name="${10}"
+    local calendar_name="${10:-}"
+    local allday="${11:-false}"
+    local status="${12:-confirmed}"
+    local excluded_dates="${13:-}"
     
     calendar_log "INFO" "Creating calendar event: $title"
     
@@ -346,7 +412,7 @@ create_calendar_event() {
     
     # Generate AppleScript
     local applescript
-    applescript=$(create_applescript "$title" "$start_time_converted" "$end_time_converted" "$description" "$location" "$url" "$alerts" "$recurrence" "$attendees" "$calendar_name")
+    applescript=$(create_applescript "$title" "$start_time_converted" "$end_time_converted" "$description" "$location" "$url" "$alerts" "$recurrence" "$attendees" "$calendar_name" "$allday" "$status" "$excluded_dates")
     
     if [ -z "$applescript" ]; then
         handle_error $ERR_CALENDAR_CREATION_FAILED "Failed to generate AppleScript"

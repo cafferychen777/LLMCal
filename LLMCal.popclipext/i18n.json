@@ -5,7 +5,13 @@
     "api_error": "API request failed",
     "invalid_key": "Invalid API key",
     "no_text": "No text selected",
-    "processing": "Processing your request..."
+    "processing": "Processing your request...",
+    "network_error": "Network connection failed",
+    "permission_error": "Calendar permission required",
+    "timeout_error": "Request timed out",
+    "parsing_error": "Failed to parse event details",
+    "calendar_error": "Calendar operation failed",
+    "config_error": "Configuration error"
   },
   "zh": {
     "success": "已成功添加事件到日历",
@@ -13,7 +19,13 @@
     "api_error": "API 请求失败",
     "invalid_key": "无效的 API 密钥",
     "no_text": "未选择文本",
-    "processing": "正在处理您的请求..."
+    "processing": "正在处理您的请求...",
+    "network_error": "网络连接失败",
+    "permission_error": "需要日历权限",
+    "timeout_error": "请求超时",
+    "parsing_error": "解析事件详情失败",
+    "calendar_error": "日历操作失败",
+    "config_error": "配置错误"
   },
   "es": {
     "success": "Evento añadido al calendario con éxito",
@@ -21,6 +33,54 @@
     "api_error": "Error en la solicitud de API",
     "invalid_key": "Clave API inválida",
     "no_text": "No hay texto seleccionado",
-    "processing": "Procesando su solicitud..."
+    "processing": "Procesando su solicitud...",
+    "network_error": "Falló la conexión de red",
+    "permission_error": "Se requiere permiso de calendario",
+    "timeout_error": "Solicitud agotada",
+    "parsing_error": "Error al analizar detalles del evento",
+    "calendar_error": "Error en operación de calendario",
+    "config_error": "Error de configuración"
+  },
+  "fr": {
+    "success": "Événement ajouté au calendrier avec succès",
+    "error": "Échec de l'ajout de l'événement au calendrier",
+    "api_error": "Échec de la requête API",
+    "invalid_key": "Clé API invalide",
+    "no_text": "Aucun texte sélectionné",
+    "processing": "Traitement de votre demande...",
+    "network_error": "Échec de la connexion réseau",
+    "permission_error": "Permission de calendrier requise",
+    "timeout_error": "Délai d'attente dépassé",
+    "parsing_error": "Échec de l'analyse des détails de l'événement",
+    "calendar_error": "Échec de l'opération calendrier",
+    "config_error": "Erreur de configuration"
+  },
+  "de": {
+    "success": "Ereignis erfolgreich zum Kalender hinzugefügt",
+    "error": "Fehler beim Hinzufügen des Ereignisses zum Kalender",
+    "api_error": "API-Anfrage fehlgeschlagen",
+    "invalid_key": "Ungültiger API-Schlüssel",
+    "no_text": "Kein Text ausgewählt",
+    "processing": "Ihre Anfrage wird bearbeitet...",
+    "network_error": "Netzwerkverbindung fehlgeschlagen",
+    "permission_error": "Kalender-Berechtigung erforderlich",
+    "timeout_error": "Anfrage-Zeitüberschreitung",
+    "parsing_error": "Fehler beim Parsen der Ereignisdetails",
+    "calendar_error": "Kalender-Operation fehlgeschlagen",
+    "config_error": "Konfigurationsfehler"
+  },
+  "ja": {
+    "success": "イベントがカレンダーに正常に追加されました",
+    "error": "カレンダーへのイベント追加に失敗しました",
+    "api_error": "APIリクエストが失敗しました",
+    "invalid_key": "無効なAPIキー",
+    "no_text": "テキストが選択されていません",
+    "processing": "リクエストを処理中...",
+    "network_error": "ネットワーク接続に失敗しました",
+    "permission_error": "カレンダーの権限が必要です",
+    "timeout_error": "リクエストがタイムアウトしました",
+    "parsing_error": "イベント詳細の解析に失敗しました",
+    "calendar_error": "カレンダー操作に失敗しました",
+    "config_error": "設定エラー"
   }
 }

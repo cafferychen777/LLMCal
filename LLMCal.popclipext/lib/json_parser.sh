@@ -4,15 +4,18 @@
 # Handles all JSON processing with improved error handling and caching
 
 # Source error handler
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/error_handler.sh"
+if [ -z "$SCRIPT_DIR" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
 
 # JSON processing configuration
 readonly JSON_TEMP_DIR="/tmp/llmcal_json"
 readonly PYTHON_JSON_PROCESSOR="/tmp/llmcal_json_processor.py"
 
-# Cache for parsed JSON (to avoid duplicate parsing)
-declare -A JSON_PARSE_CACHE
+# Cache directory for parsed JSON (to avoid duplicate parsing)
+# Using filesystem-based cache instead of associative array for Bash 3.2 compatibility
+JSON_CACHE_DIR="/tmp/llmcal_json_cache"
+mkdir -p "$JSON_CACHE_DIR" 2>/dev/null || true
 
 # Set JSON parser logger
 set_error_logger "json_log"
@@ -157,6 +160,12 @@ def validate_event_data(event_data: Dict[str, Any]) -> Dict[str, Any]:
     normalized_event['url'] = str(event_data.get('url', '')).strip()
     normalized_event['recurrence'] = str(event_data.get('recurrence', 'none')).strip()
     
+    # New fields for calendar management
+    normalized_event['priority'] = str(event_data.get('priority', 'medium')).strip()
+    normalized_event['calendar_type'] = str(event_data.get('calendar_type', '')).strip()
+    normalized_event['status'] = str(event_data.get('status', 'confirmed')).strip()
+    normalized_event['allday'] = event_data.get('allday', False)
+    
     # Handle alerts (should be array of numbers)
     alerts = event_data.get('alerts', [])
     if isinstance(alerts, list):
@@ -170,6 +179,13 @@ def validate_event_data(event_data: Dict[str, Any]) -> Dict[str, Any]:
         normalized_event['attendees'] = [str(x).strip() for x in attendees if x]
     else:
         normalized_event['attendees'] = []
+    
+    # Handle excluded_dates (should be array of date strings)
+    excluded_dates = event_data.get('excluded_dates', [])
+    if isinstance(excluded_dates, list):
+        normalized_event['excluded_dates'] = [str(x).strip() for x in excluded_dates if x]
+    else:
+        normalized_event['excluded_dates'] = []
     
     return normalized_event
 
@@ -283,10 +299,11 @@ parse_json_with_fallback() {
     local cache_key
     cache_key=$(echo "$json_text" | shasum -a 256 2>/dev/null | cut -d' ' -f1)
     
-    # Check cache first
-    if [ -n "${JSON_PARSE_CACHE[$cache_key]:-}" ]; then
+    # Check cache first (using file-based cache)
+    local cache_file="$JSON_CACHE_DIR/$cache_key"
+    if [ -f "$cache_file" ]; then
         json_log "DEBUG" "Using cached JSON parse result"
-        echo "${JSON_PARSE_CACHE[$cache_key]}"
+        cat "$cache_file"
         return $ERR_SUCCESS
     fi
     
@@ -319,8 +336,8 @@ except Exception as e:
     fi
     
     if [ $parse_result -eq 0 ] && [ -n "$result" ] && [ "$result" != "null" ]; then
-        # Cache successful result
-        JSON_PARSE_CACHE[$cache_key]="$result"
+        # Cache successful result (using file-based cache)
+        echo "$result" > "$cache_file"
         echo "$result"
         return $ERR_SUCCESS
     else
@@ -502,13 +519,13 @@ create_json() {
 
 # Clear JSON parse cache
 clear_json_cache() {
-    JSON_PARSE_CACHE=()
+    rm -f "$JSON_CACHE_DIR"/* 2>/dev/null || true
     json_log "INFO" "JSON parse cache cleared"
 }
 
 # Get JSON cache statistics
 get_json_cache_stats() {
-    local cache_size=${#JSON_PARSE_CACHE[@]}
+    local cache_size=$(find "$JSON_CACHE_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
     echo "JSON Cache: $cache_size entries"
     json_log "INFO" "JSON cache contains $cache_size entries"
 }
