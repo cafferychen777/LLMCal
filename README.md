@@ -110,6 +110,9 @@ LLMCal is a PopClip extension for macOS that uses AI to convert natural language
 - 👥 **Attendees**: Automatically adds event participants from email addresses in the text
 - 🌍 **Time Zones**: Understands and handles different time zones in event descriptions
 
+> See full feature highlights: https://cafferychen777.github.io/LLMCal/features.html
+
+
 ## Prerequisites
 
 1. **PopClip Installation**
