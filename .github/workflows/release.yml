@@ -53,9 +53,26 @@ jobs:
             git log -n 30 --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
           fi
 
-      - name: Extract short highlights from commits
+      - name: Extract highlights (prefer PR titles)
         id: highlights
         run: |
+          # Try to extract PR titles from recent merge commits
+          git log -n 50 --merges --pretty=%B | awk '
+            /^Merge pull request/ { flag=1; next }
+            flag==1 && NF { print "- " $0; flag=0; next }
+            { next }
+          ' | head -n 5 > pr_highlights.txt
+
+          if [ -s pr_highlights.txt ]; then
+            sed -i '1s/^/## Highlights (PR titles)\n/' pr_highlights.txt || true
+            cat pr_highlights.txt >> release_body.md
+          else
+            # Fallback to recent commit subjects (non-merge)
+            git log -n 20 --pretty=format:"- %s" --no-merges | head -n 5 > short_highlights.txt
+            sed -i '1s/^/## Highlights (auto)\n/' short_highlights.txt || true
+            cat short_highlights.txt >> release_body.md
+          fi
+
       - name: Group highlights by type
         run: |
           echo "\n## Highlights by type (auto)" >> release_body.md
@@ -65,11 +82,6 @@ jobs:
           git log -n 50 --pretty=format:"- %s" --no-merges | grep -E '^fix' || true >> release_body.md
           echo "\n### Chores" >> release_body.md
           git log -n 50 --pretty=format:"- %s" --no-merges | grep -E '^chore' || true >> release_body.md
-
-          # Prefer PR titles if available (picked from merged commits), fallback to recent commits
-          git log -n 20 --pretty=format:"- %s" --no-merges | head -n 5 > short_highlights.txt
-          sed -i '1s/^/## Highlights (auto)\n/' short_highlights.txt
-          cat short_highlights.txt >> release_body.md
 
       - name: Create Release
         id: create_release
