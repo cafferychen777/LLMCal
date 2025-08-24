@@ -69,7 +69,37 @@ def clean_json_content(content: str) -> str:
 
 def extract_json_from_text(text: str) -> Optional[str]:
     """Extract JSON content from mixed text."""
-    # Look for JSON-like structures
+    # First try to find a complete JSON object containing 'title'
+    # This handles cases where LLM adds explanatory text after the JSON
+    
+    # Pattern to match JSON object with title field (handles nested objects and arrays)
+    title_json_pattern = r'\{[^{}]*"title"[^{}]*(?:\{[^{}]*\}[^{}]*)*(?:\[[^\[\]]*\][^{}]*)*\}'
+    
+    matches = re.findall(title_json_pattern, text, re.DOTALL)
+    for match in matches:
+        try:
+            # Balance braces if needed
+            open_braces = match.count('{')
+            close_braces = match.count('}')
+            if open_braces > close_braces:
+                # Find additional closing braces from the text
+                remaining_text = text[text.index(match) + len(match):]
+                for char in remaining_text:
+                    if char == '}':
+                        match += char
+                        close_braces += 1
+                        if open_braces == close_braces:
+                            break
+            
+            # Test if it's valid JSON
+            parsed = json.loads(match)
+            # Verify it has essential fields
+            if isinstance(parsed, dict) and 'title' in parsed:
+                return match
+        except (json.JSONDecodeError, ValueError):
+            continue
+    
+    # Fallback to simpler patterns
     json_patterns = [
         r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}',  # Simple nested JSON
         r'\{.*?\}',  # Basic JSON object
@@ -105,6 +135,29 @@ def process_anthropic_response(response_text: str) -> Dict[str, Any]:
                 if content_list and isinstance(content_list, list):
                     text_content = content_list[0].get('text', '')
                     if text_content:
+                        # Try to extract JSON directly using brace counting
+                        start = text_content.find('{')
+                        if start >= 0:
+                            count = 0
+                            end = -1
+                            for i in range(start, len(text_content)):
+                                if text_content[i] == '{':
+                                    count += 1
+                                elif text_content[i] == '}':
+                                    count -= 1
+                                    if count == 0:
+                                        end = i + 1
+                                        break
+                            
+                            if end > start:
+                                json_str = text_content[start:end]
+                                try:
+                                    event_data = json.loads(json_str)
+                                    return event_data
+                                except json.JSONDecodeError:
+                                    pass
+                        
+                        # Fallback to cleaning method
                         cleaned_content = clean_json_content(text_content)
                         event_data = json.loads(cleaned_content)
                         return event_data
