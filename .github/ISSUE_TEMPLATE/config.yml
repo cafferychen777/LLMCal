@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Ideas (Discussions)
+    url: https://github.com/cafferychen777/LLMCal/discussions
+    about: Ask questions, share ideas, and get help
+  - name: Security reports
+    url: https://github.com/cafferychen777/LLMCal/security/advisories
+    about: Please report security vulnerabilities via private advisory
+

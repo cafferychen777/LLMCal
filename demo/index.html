@@ -4,9 +4,41 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LLMCal Demo</title>
+    <meta name="keywords" content="PopClip, AI, calendar, macOS, Apple Calendar, Google Calendar, reminders, recurring events, Zoom, Teams, Meet, NLP">
+    <meta property="og:locale" content="en_US" />
+    <title>LLMCal Demo — PopClip AI Calendar Extension</title>
+    <meta name="description" content="LLMCal is a PopClip extension that turns natural language into Apple/Google Calendar events with reminders, recurring rules, and meeting link parsing.">
+    <link rel="canonical" href="https://cafferychen777.github.io/LLMCal/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LLMCal Demo — PopClip AI Calendar Extension" />
+    <meta property="og:description" content="Turn selected text into calendar events. Multilingual, reminders, recurring events, Zoom/Teams/Meet links." />
+    <meta property="og:url" content="https://cafferychen777.github.io/LLMCal/" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/logo.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LLMCal Demo — PopClip AI Calendar Extension" />
+    <meta name="twitter:description" content="Natural-language to calendar events on macOS via PopClip." />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/og.png" />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "LLMCal",
+      "operatingSystem": "macOS",
+      "applicationCategory": "Productivity",
+      "description": "PopClip extension that converts selected text into calendar events.",
+      "url": "https://cafferychen777.github.io/LLMCal/",
+      "offers": {"@type":"Offer","price":"0","priceCurrency":"USD"}
+    }
+    </script>
   </head>
   <body>
+    <nav style="max-width:880px;margin:12px auto 0;padding:0 16px"><a href="./faq.html">FAQ</a> · <a href="./use-cases.html">Use Cases</a> · <a href="https://github.com/cafferychen777/LLMCal">GitHub</a></nav>
     <div id="root"></div>
     <script type="module" src="./src/main.tsx"></script>
   </body>

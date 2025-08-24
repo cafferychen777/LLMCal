@@ -1,3 +1,5 @@
+# LLMCal — PopClip AI Calendar Extension
+
 <div align="center">
 
 **[English](#english)** | **[中文](#chinese)** | **[Español](#español)** | **[Français](#français)** | **[Deutsch](#deutsch)** | **[日本語](#japanese)**
@@ -7,12 +9,22 @@
 # English
 
 <div align="center">
-  <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+  <img src="assets/logo.png" alt="LLMCal Logo (PopClip AI Calendar Extension)" width="200">
+
   <h1>LLMCal - AI-Powered Calendar Event Creator for PopClip</h1>
-  
+
+  <!-- Project badges -->
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
-    <img src="https://img.shields.io/badge/Demo-Live-brightgreen" alt="Live Demo">
+    <img src="https://img.shields.io/badge/Demo-Live-brightgreen" alt="Live Demo (GitHub Pages)">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/actions/workflows/test.yml">
+    <img src="https://github.com/cafferychen777/LLMCal/actions/workflows/test.yml/badge.svg" alt="CI: Test Suite">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/actions/workflows/e2e.yml">
+    <img src="https://github.com/cafferychen777/LLMCal/actions/workflows/e2e.yml/badge.svg" alt="CI: E2E Tests">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/actions/workflows/deploy.yml">
+    <img src="https://github.com/cafferychen777/LLMCal/actions/workflows/deploy.yml/badge.svg" alt="Deploy Demo (Pages)">
   </a>
   <a href="https://github.com/cafferychen777/LLMCal/stargazers">
     <img src="https://img.shields.io/github/stars/cafferychen777/LLMCal" alt="GitHub stars">
@@ -23,18 +35,42 @@
   <a href="https://github.com/cafferychen777/LLMCal/issues">
     <img src="https://img.shields.io/github/issues/cafferychen777/LLMCal" alt="GitHub issues">
   </a>
+  <a href="https://github.com/cafferychen777/LLMCal/discussions">
+    <img src="https://img.shields.io/github/discussions/cafferychen777/LLMCal" alt="GitHub Discussions">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/releases">
+    <img src="https://img.shields.io/github/downloads/cafferychen777/LLMCal/total" alt="Downloads">
+  </a>
   <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
   </a>
-  <a href="https://github.com/cafferychen777/LLMCal/releases">
-    <img src="https://img.shields.io/github/v/release/cafferychen777/LLMCal" alt="GitHub release">
+  <a href="https://github.com/cafferychen777/LLMCal/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome">
   </a>
   <a href="https://www.popclip.app/">
-    <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform">
+    <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform: PopClip (macOS)">
   </a>
 </div>
 
+> Quick Install: Download latest release → Double‑click → Enter API key → Select text → Click calendar icon
+
+
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Example Inputs](#example-inputs)
+- [Google Calendar Integration](#google-calendar-integration)
+- [Privacy & Security](#privacy--security)
+- [Why LLMCal? (Use Cases & Alternatives)](#why-llmcal-use-cases--alternatives)
+- [Quick Start Guide](#quick-start-guide)
+- [Advanced Configuration](#advanced-configuration)
+- [Troubleshooting](#troubleshooting)
+- [FAQ](#faq)
+- [Comparison to Alternatives](#comparison-to-alternatives)
+- [Community & Support](#community--support)
+
 
 ## Features
 
@@ -136,6 +172,28 @@ While LLMCal currently works directly with Apple Calendar, you can still use it 
 3. **Troubleshooting**
    - If events aren't syncing, check your internet connection
    - Ensure your Google account is properly connected in System Settings
+## FAQ
+
+- Does it work with Google Calendar?
+  - Yes. Connect Google account to Apple Calendar on macOS; events created via LLMCal sync to Google Calendar.
+- Does it detect recurring events and reminders?
+  - Yes. It parses common recurring patterns and reminders from natural language.
+- Does it support Zoom/Teams/Meet links?
+  - Yes. Meeting URLs in the selected text are extracted and added to the event.
+
+## Comparison to Alternatives
+
+- PopClip + LLMCal vs full calendar apps: much faster for “highlight text → create event”, zero window/context switching
+- Native calendar parsing: typically limited; LLMCal leverages AI (Claude) for more robust extraction (attendees, locations, time zones)
+- Browser extensions: require browser context; LLMCal works system-wide on macOS via PopClip
+
+## Community & Support
+
+- Issues: use the templates to report bugs and request features
+- Discussions: share ideas and Q&A in GitHub Discussions
+- Security: report privately via Security Advisory
+- Docs: see docs/INSTALLATION.md, docs/DEVELOPMENT.md, docs/TROUBLESHOOTING.md, and CONTRIBUTING.md
+
    - Try removing and re-adding your Google account if issues persist
    - Check if you've granted necessary permissions to both calendars
 
@@ -145,6 +203,12 @@ While LLMCal currently works directly with Apple Calendar, you can still use it 
 - No event data is stored or transmitted except to create the calendar event
 - All natural language processing is done through Claude AI
 - The extension only requires necessary permissions: text selection and calendar access
+
+## Why LLMCal? (Use Cases & Alternatives)
+
+- Rapidly create Apple/Google Calendar events on macOS from highlighted text
+- Reliable parsing of reminders, recurring rules (RRULE), locations, and meeting links (Zoom/Teams/Meet)
+- Lightweight PopClip workflow vs. full-blown calendar apps or browser extensions
 
 ## Quick Start Guide
 
@@ -183,7 +247,7 @@ LLMCal automatically detects your system language and supports:
 
 #### 🔑 API Key Problems
 **Issue**: "Invalid API key" error
-**Solution**: 
+**Solution**:
 1. Verify your API key at [console.anthropic.com](https://console.anthropic.com/)
 2. Check for extra spaces or characters
 3. Restart PopClip after updating
@@ -226,9 +290,9 @@ This project is licensed under the GNU Affero General Public License Version 3 (
 
 <div align="center">
   <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+
   <h1>LLMCal - 基于 AI 的 PopClip 日历事件创建工具</h1>
-  
+
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/演示-查看-brightgreen" alt="在线演示">
   </a>
@@ -379,9 +443,9 @@ LLMCal 是一个强大的 PopClip 扩展，使用 AI 将选定的文本转换为
 
 <div align="center">
   <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+
   <h1>LLMCal - Creador de Eventos de Calendario Impulsado por IA para PopClip</h1>
-  
+
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/Demo-Ver-brightgreen" alt="Demo en vivo">
   </a>
@@ -532,9 +596,9 @@ Este proyecto está licenciado bajo la Licencia Pública General de GNU Affero V
 
 <div align="center">
   <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+
   <h1>LLMCal - Créateur d'événements de calendrier alimenté par IA pour PopClip</h1>
-  
+
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/Démo-Voir-brightgreen" alt="Démo en direct">
   </a>
@@ -571,9 +635,9 @@ Puis cliquez sur l'icône calendrier dans le menu PopClip.
 
 <div align="center">
   <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+
   <h1>LLMCal - KI-gestützter Kalenderereignis-Creator für PopClip</h1>
-  
+
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/Demo-Ansehen-brightgreen" alt="Live-Demo">
   </a>
@@ -610,9 +674,9 @@ Klicken Sie dann auf das Kalendersymbol im PopClip-Menü.
 
 <div align="center">
   <img src="assets/logo.png" alt="LLMCal Logo" width="200">
-  
+
   <h1>LLMCal - PopClip用のAI搭載カレンダーイベントクリエーター</h1>
-  
+
   <a href="https://cafferychen777.github.io/LLMCal/" target="_blank">
     <img src="https://img.shields.io/badge/デモ-表示-brightgreen" alt="ライブデモ">
   </a>
