@@ -35,12 +35,7 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
-          body: |
-            Automatic release from main branch
-            
-            Changes in this release:
-            - Date-based version: v${{ steps.get_version.outputs.version }}
-            - Triggered by push to main branch
+          body_path: .github/release_template.md
           files: |
             LLMCal-latest.popclipext.zip
           draft: false
