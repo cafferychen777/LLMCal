@@ -35,16 +35,25 @@
   <a href="https://github.com/cafferychen777/LLMCal/issues">
     <img src="https://img.shields.io/github/issues/cafferychen777/LLMCal" alt="GitHub issues">
   </a>
+  <a href="https://github.com/cafferychen777/LLMCal/discussions">
+    <img src="https://img.shields.io/github/discussions/cafferychen777/LLMCal" alt="GitHub Discussions">
+  </a>
+  <a href="https://github.com/cafferychen777/LLMCal/releases">
+    <img src="https://img.shields.io/github/downloads/cafferychen777/LLMCal/total" alt="Downloads">
+  </a>
   <a href="https://github.com/cafferychen777/LLMCal/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-AGPLv3%20with%20Commons%20Clause-blue" alt="License">
   </a>
-  <a href="https://github.com/cafferychen777/LLMCal/releases">
-    <img src="https://img.shields.io/github/v/release/cafferychen777/LLMCal" alt="GitHub release">
+  <a href="https://github.com/cafferychen777/LLMCal/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome">
   </a>
   <a href="https://www.popclip.app/">
     <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform: PopClip (macOS)">
   </a>
 </div>
+
+> Quick Install: Download latest release → Double‑click → Enter API key → Select text → Click calendar icon
+
 
 LLMCal is a powerful PopClip extension that uses AI to convert selected text into calendar events. It understands natural language descriptions and automatically creates events with proper titles, times, locations, meeting links, and reminders.
 ## Table of Contents
