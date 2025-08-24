@@ -35,13 +35,31 @@ jobs:
           cd ..
           mv LLMCal.popclipext.zip LLMCal-latest.popclipext.zip
 
+      - name: Build release notes body
+        id: build_notes
+        run: |
+          TEMPLATE_FILE="${{ steps.get_version.outputs.template }}"
+          BODY_FILE="release_body.md"
+          cp "$TEMPLATE_FILE" "$BODY_FILE"
+          echo "" >> "$BODY_FILE"
+          echo "## Changes" >> "$BODY_FILE"
+          # Try to get last tag; if none, show recent commits
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            echo "(since $LAST_TAG)" >> "$BODY_FILE"
+            git log "$LAST_TAG"..HEAD --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
+          else
+            echo "(recent commits)" >> "$BODY_FILE"
+            git log -n 30 --pretty=format:"- %s (%h)" --no-merges >> "$BODY_FILE"
+          fi
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
-          body_path: ${{ steps.get_version.outputs.template }}
+          body_path: release_body.md
           files: |
             LLMCal-latest.popclipext.zip
           draft: false
