@@ -55,7 +55,7 @@
   </a>
 <p align="center">
   <a href="https://cafferychen777.github.io/LLMCal/features.html">
-    <img src="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/screenshots/feature-popclip-flow.svg" alt="LLMCal PopClip flow — highlight text to calendar event" width="760" />
+    <img src="https://raw.githubusercontent.com/cafferychen777/LLMCal/main/assets/screenshots/popclip-ai-calendar-highlight-to-event.svg" alt="PopClip AI calendar: highlight text to create Apple/Google Calendar event in seconds" width="760" />
   </a>
 </p>
 
@@ -64,6 +64,11 @@
   </a>
   <a href="https://www.popclip.app/">
     <img src="https://img.shields.io/badge/Platform-PopClip-orange" alt="Platform: PopClip (macOS)">
+
+<div align="center">
+  <sub>Quick compare:</sub> <a href="https://cafferychen777.github.io/LLMCal/features.html">Features</a> · <a href="https://github.com/cafferychen777/LLMCal/blob/main/docs/FEATURE_DETAILS.md">Details</a>
+</div>
+
   </a>
 </div>
 

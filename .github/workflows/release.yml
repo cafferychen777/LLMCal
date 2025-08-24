@@ -56,6 +56,16 @@ jobs:
       - name: Extract short highlights from commits
         id: highlights
         run: |
+      - name: Group highlights by type
+        run: |
+          echo "\n## Highlights by type (auto)" >> release_body.md
+          echo "\n### Features" >> release_body.md
+          git log -n 50 --pretty=format:"- %s" --no-merges | grep -E '^feat' || true >> release_body.md
+          echo "\n### Fixes" >> release_body.md
+          git log -n 50 --pretty=format:"- %s" --no-merges | grep -E '^fix' || true >> release_body.md
+          echo "\n### Chores" >> release_body.md
+          git log -n 50 --pretty=format:"- %s" --no-merges | grep -E '^chore' || true >> release_body.md
+
           # Prefer PR titles if available (picked from merged commits), fallback to recent commits
           git log -n 20 --pretty=format:"- %s" --no-merges | head -n 5 > short_highlights.txt
           sed -i '1s/^/## Highlights (auto)\n/' short_highlights.txt
