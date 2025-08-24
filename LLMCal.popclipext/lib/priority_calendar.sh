@@ -16,7 +16,7 @@ readonly CALENDAR_WORK="Work"
 readonly CALENDAR_PERSONAL="Personal"
 readonly CALENDAR_DEADLINE="Deadlines"
 readonly CALENDAR_MEETING="Meetings"
-readonly CALENDAR_DEFAULT="cafferychen7850@gmail.com"  # Your default calendar
+readonly CALENDAR_DEFAULT=""  # Set your default calendar here
 
 # Priority keywords for detection
 readonly HIGH_PRIORITY_KEYWORDS="urgent|important|critical|asap|emergency|high priority|必须|紧急|重要|立即|马上"
