@@ -180,6 +180,7 @@ validate_dependencies() {
 # Show recovery suggestion to user
 show_recovery_suggestion() {
     local suggestion=""
+    local detailed_error="${LAST_ERROR_MESSAGE:-Unknown error}"
     
     case "$LAST_ERROR_CODE" in
         $ERR_API_KEY_MISSING)
@@ -192,15 +193,31 @@ show_recovery_suggestion() {
             suggestion="Please install required dependencies: brew install jq"
             ;;
         $ERR_CALENDAR_CREATION_FAILED)
-            suggestion="Please ensure Calendar app has necessary permissions"
+            suggestion="Calendar creation failed. Please check if the event details were parsed correctly."
+            ;;
+        $ERR_JSON_PARSE_FAILED)
+            suggestion="Failed to parse event details. The AI response may be incomplete or malformed."
+            ;;
+        $ERR_INVALID_DATE_TIME)
+            suggestion="Invalid date/time format. Please check the event timing."
             ;;
         *)
-            suggestion="Please try again or check the logs for more details"
+            # For unknown errors, show the actual error message if available
+            if [ -n "$LAST_ERROR_MESSAGE" ]; then
+                suggestion="Error: $LAST_ERROR_MESSAGE"
+            else
+                suggestion="An unexpected error occurred. Please check the logs for details."
+            fi
             ;;
     esac
     
+    # Add the actual error message to the suggestion for better clarity
+    if [ -n "$LAST_ERROR_MESSAGE" ] && [ "$LAST_ERROR_CODE" -ne 0 ]; then
+        suggestion="${suggestion}\n\nDetails: ${LAST_ERROR_MESSAGE}"
+    fi
+    
     if [ -n "$suggestion" ]; then
-        osascript -e "display dialog \"$suggestion\" buttons {\"OK\"} default button 1 with title \"LLMCal - Recovery Suggestion\"" 2>/dev/null || true
+        osascript -e "display dialog \"$suggestion\" buttons {\"OK\"} default button 1 with title \"LLMCal - Error Details\"" 2>/dev/null || true
     fi
 }
 

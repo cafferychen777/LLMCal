@@ -1,60 +1,56 @@
-# Dependencies
-node_modules
-venv
+# Internal files - not for public
+internal_tests/
+internal_docs/
+i18n_backups/
+test_logs/
 
-# Build outputs
-dist
-build
-*.zip
-*.popclipextz
-LLMCal-latest.popclipext.zip
-LLMCal.popclipext.zip
-LLMCal.popclipextz
+# API keys and credentials
+*.key
+*.secret
+.env
+.env.local
+credentials.json
+config.local.json
 
-# IDE and OS files
+# Test files with API keys
+*test_api*.sh
+*test_api*.py
+
+# System files
 .DS_Store
-.idea
-.vscode
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*~
 *.swp
 *.swo
 
-# Environment files
-.env
-.env.local
-.env.*.local
-.env.production
-.env.development
-.env.test
+# Cache
+cache/
+*.cache
+/tmp/llmcal_*
 
-# Security and credentials
-secrets/
-credentials/
-*.key
-*.pem
-*.crt
-*.cert
-config/secrets.json
-config/credentials.json
+# IDE
+.vscode/
+.idea/
 
-# Sensitive test files
-test_credentials.sh
-local_test.sh
-*_secrets.*
-/tmp/test_*.sh
-test_*.sh
-
-# Backup files that might contain sensitive data
-*.bak
+# Backup files
 *.backup
-*~
+*.bak
+*_original.*
 
-# Cache and logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-.vite
-__pycache__/
-*.py[cod]
-LLMCalApp/.build/
+# Debug files
+failed_parse_*.json
+error_report_*.txt
+
+# PopClip internal
+LLMCal.popclipext/internal_*
+LLMCal.popclipext/i18n_backups/

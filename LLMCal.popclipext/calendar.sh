@@ -453,6 +453,25 @@ main() {
     local extract_result=$?
     
     if [ $extract_result -ne "$ERR_SUCCESS" ]; then
+        log "ERROR" "Event extraction failed. Raw API response: $api_response"
+        
+        # Save the problematic response for debugging
+        local debug_file="$LOG_DIR/failed_parse_$(date +%Y%m%d_%H%M%S).json"
+        echo "$api_response" > "$debug_file"
+        log "ERROR" "Saved failed response to: $debug_file"
+        
+        # Try to extract any error message from the API response
+        local api_error_msg=""
+        if echo "$api_response" | grep -q "error"; then
+            api_error_msg=$(echo "$api_response" | grep -o '"message":"[^"]*"' | cut -d'"' -f4)
+        fi
+        
+        if [ -n "$api_error_msg" ]; then
+            set_last_error "$ERR_JSON_PARSE_FAILED" "AI parsing error: $api_error_msg"
+        else
+            set_last_error "$ERR_JSON_PARSE_FAILED" "Failed to parse event from text: '$POPCLIP_TEXT'"
+        fi
+        
         show_error_notification_with_message
         show_recovery_suggestion
         graceful_exit
