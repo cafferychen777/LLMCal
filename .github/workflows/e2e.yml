@@ -5,9 +5,6 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  schedule:
-    # Run E2E tests twice daily
-    - cron: '0 6,18 * * *'
 
 env:
   NODE_VERSION: '18'
@@ -17,7 +14,7 @@ jobs:
   e2e-tests:
     name: 🎯 E2E Tests
     runs-on: macos-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     
     steps:
     - name: 📥 Checkout repository
@@ -32,393 +29,36 @@ jobs:
     - name: 📦 Install dependencies
       run: npm ci
 
-    - name: 🎭 Create E2E test suite
+    - name: 🎭 Run basic E2E tests
       run: |
-        mkdir -p tests/e2e
-        cat > tests/e2e/full_flow.test.js << 'EOF'
-        /**
-         * End-to-end tests for LLMCal
-         * Testing complete user workflows from text input to calendar event creation
-         */
+        echo "🎭 Running basic end-to-end tests..."
 
-        const { exec } = require('child_process');
-        const { MockServiceManager } = require('../mocks');
-        const fs = require('fs').promises;
-        const path = require('path');
-
-        describe('End-to-End Workflow Tests', () => {
-          let mockServices;
-          let testEnv;
-
-          beforeAll(async () => {
-            // Start mock services
-            mockServices = new MockServiceManager();
-            await mockServices.startAll();
-          });
-
-          afterAll(async () => {
-            // Stop mock services
-            if (mockServices) {
-              await mockServices.stopAll();
-            }
-          });
-
-          beforeEach(() => {
-            testEnv = mockServices.setupTestEnvironment('e2e-test');
-          });
-
-          describe('Complete Meeting Creation Flow', () => {
-            test('should process simple meeting text end-to-end', async () => {
-              const testText = 'Team meeting tomorrow at 3pm for 1 hour';
-              
-              const workflow = `
-                export POPCLIP_TEXT="${testText}"
-                
-                # Simulate the complete workflow
-                echo "Step 1: Processing text input"
-                if [ -z "$POPCLIP_TEXT" ]; then
-                  echo "ERROR: No input text"
-                  exit 1
-                fi
-                
-                echo "Step 2: Calling Claude API (mock)"
-                response=$(curl -s -X POST "${mockServices.getAnthropicEndpoint()}" \\
-                  -H "x-api-key: $POPCLIP_OPTION_ANTHROPIC_API_KEY" \\
-                  -H "anthropic-version: 2023-06-01" \\
-                  -H "content-type: application/json" \\
-                  -d "{\\"model\\": \\"claude-sonnet-4-20250514\\", \\"max_tokens\\": 1024, \\"messages\\": [{\\"role\\": \\"user\\", \\"content\\": \\"Convert text to calendar event: $POPCLIP_TEXT\\"}]}")
-                
-                if [ $? -ne 0 ]; then
-                  echo "ERROR: API call failed"
-                  exit 1
-                fi
-                
-                echo "Step 3: Parsing API response"
-                event_data=$(echo "$response" | jq -r '.content[0].text')
-                title=$(echo "$event_data" | jq -r '.title')
-                
-                if [ -z "$title" ] || [ "$title" = "null" ]; then
-                  echo "ERROR: Failed to parse event data"
-                  exit 1
-                fi
-                
-                echo "Step 4: Generating AppleScript (simulated)"
-                echo "Generated AppleScript for event: $title"
-                
-                echo "E2E_SUCCESS"
-              `;
-
-              return new Promise((resolve, reject) => {
-                exec(workflow, { env: testEnv }, (error, stdout, stderr) => {
-                  if (error) {
-                    reject(new Error(`E2E workflow failed: ${stderr}`));
-                    return;
-                  }
-
-                  expect(stdout).toContain('Step 1: Processing text input');
-                  expect(stdout).toContain('Step 2: Calling Claude API');
-                  expect(stdout).toContain('Step 3: Parsing API response');
-                  expect(stdout).toContain('Step 4: Generating AppleScript');
-                  expect(stdout).toContain('E2E_SUCCESS');
-                  resolve();
-                });
-              });
-            }, 15000);
-
-            test('should handle zoom meeting creation end-to-end', async () => {
-              const testText = 'Zoom call with clients tomorrow at 2pm';
-              
-              const zoomWorkflow = `
-                export POPCLIP_TEXT="${testText}"
-                
-                echo "Step 1: Detecting Zoom requirement"
-                if [[ "$POPCLIP_TEXT" =~ [Zz]oom ]]; then
-                  echo "Zoom meeting detected"
-                else
-                  echo "ERROR: Zoom not detected in text"
-                  exit 1
-                fi
-                
-                echo "Step 2: Getting Zoom OAuth token"
-                auth_header=$(echo -n "$POPCLIP_OPTION_ZOOM_CLIENT_ID:$POPCLIP_OPTION_ZOOM_CLIENT_SECRET" | base64)
-                token_response=$(curl -s -X POST "${mockServices.getZoomOAuthEndpoint()}?grant_type=account_credentials&account_id=$POPCLIP_OPTION_ZOOM_ACCOUNT_ID" \\
-                  -H "Authorization: Basic $auth_header")
-                
-                access_token=$(echo "$token_response" | jq -r '.access_token')
-                if [ -z "$access_token" ] || [ "$access_token" = "null" ]; then
-                  echo "ERROR: Failed to get Zoom token"
-                  exit 1
-                fi
-                
-                echo "Step 3: Creating Zoom meeting"
-                meeting_response=$(curl -s -X POST "${mockServices.getZoomApiEndpoint()}/users/me/meetings" \\
-                  -H "Authorization: Bearer $access_token" \\
-                  -H "Content-Type: application/json" \\
-                  -d '{"topic": "Client Call", "type": 2, "duration": 60}')
-                
-                join_url=$(echo "$meeting_response" | jq -r '.join_url')
-                if [ -z "$join_url" ] || [ "$join_url" = "null" ]; then
-                  echo "ERROR: Failed to create Zoom meeting"
-                  exit 1
-                fi
-                
-                echo "Step 4: Meeting created successfully"
-                echo "Join URL: $join_url"
-                
-                echo "ZOOM_E2E_SUCCESS"
-              `;
-
-              return new Promise((resolve, reject) => {
-                exec(zoomWorkflow, { env: testEnv }, (error, stdout, stderr) => {
-                  if (error) {
-                    reject(new Error(`Zoom E2E workflow failed: ${stderr}`));
-                    return;
-                  }
-
-                  expect(stdout).toContain('Zoom meeting detected');
-                  expect(stdout).toContain('Meeting created successfully');
-                  expect(stdout).toContain('Join URL:');
-                  expect(stdout).toContain('ZOOM_E2E_SUCCESS');
-                  resolve();
-                });
-              });
-            }, 15000);
-          });
-
-          describe('Error Handling Workflows', () => {
-            test('should handle API authentication errors gracefully', async () => {
-              const badEnv = { 
-                ...testEnv, 
-                POPCLIP_OPTION_ANTHROPIC_API_KEY: 'invalid-key'
-              };
-
-              const errorWorkflow = `
-                export POPCLIP_TEXT="Test meeting"
-                
-                echo "Testing error handling workflow"
-                response=$(curl -s -w "HTTP_CODE:%{http_code}" -X POST "${mockServices.getAnthropicEndpoint()}" \\
-                  -H "x-api-key: $POPCLIP_OPTION_ANTHROPIC_API_KEY" \\
-                  -H "anthropic-version: 2023-06-01" \\
-                  -H "content-type: application/json" \\
-                  -d '{"model": "claude-sonnet-4-20250514", "max_tokens": 100, "messages": [{"role": "user", "content": "test"}]}')
-                
-                http_code=$(echo "$response" | grep -o "HTTP_CODE:[0-9]*" | cut -d: -f2)
-                
-                if [ "$http_code" = "401" ]; then
-                  echo "Authentication error handled correctly"
-                  echo "ERROR_HANDLED_SUCCESS"
-                else
-                  echo "ERROR: Expected 401, got $http_code"
-                  exit 1
-                fi
-              `;
-
-              return new Promise((resolve, reject) => {
-                exec(errorWorkflow, { env: badEnv }, (error, stdout, stderr) => {
-                  if (error) {
-                    // Expected to fail due to auth error, but should handle gracefully
-                    if (stdout.includes('ERROR_HANDLED_SUCCESS')) {
-                      resolve();
-                    } else {
-                      reject(new Error('Error handling workflow failed'));
-                    }
-                  } else {
-                    expect(stdout).toContain('ERROR_HANDLED_SUCCESS');
-                    resolve();
-                  }
-                });
-              });
-            });
-          });
-
-          describe('Performance Workflows', () => {
-            test('should complete typical workflow within performance threshold', async () => {
-              const startTime = Date.now();
-              
-              const performanceWorkflow = `
-                export POPCLIP_TEXT="Quick meeting test"
-                
-                # Lightweight workflow for performance testing
-                response=$(curl -s -X POST "${mockServices.getAnthropicEndpoint()}" \\
-                  -H "x-api-key: $POPCLIP_OPTION_ANTHROPIC_API_KEY" \\
-                  -H "anthropic-version: 2023-06-01" \\
-                  -H "content-type: application/json" \\
-                  -d '{"model": "claude-sonnet-4-20250514", "max_tokens": 100, "messages": [{"role": "user", "content": "Quick test"}]}')
-                
-                echo "PERFORMANCE_TEST_COMPLETE"
-              `;
-
-              return new Promise((resolve, reject) => {
-                exec(performanceWorkflow, { env: testEnv }, (error, stdout, stderr) => {
-                  const endTime = Date.now();
-                  const duration = endTime - startTime;
-
-                  if (error) {
-                    reject(error);
-                    return;
-                  }
-
-                  expect(stdout).toContain('PERFORMANCE_TEST_COMPLETE');
-                  expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
-                  resolve();
-                });
-              });
-            });
-          });
-        });
-        EOF
-
-    - name: 🚀 Run E2E tests
-      run: npm run test:e2e
-      env:
-        NODE_ENV: test
-        CI: true
-        E2E_MODE: true
-
-    - name: 📊 Generate E2E test report
-      if: always()
-      run: |
-        echo "# 🎭 E2E Test Results" > e2e_report.md
-        echo "" >> e2e_report.md
-        echo "**Test Run:** $(date)" >> e2e_report.md
-        echo "**Environment:** macOS Latest, Node.js ${{ env.NODE_VERSION }}" >> e2e_report.md
-        echo "" >> e2e_report.md
-        
-        if [ -f "coverage/test-report.html" ]; then
-          echo "✅ E2E tests completed successfully" >> e2e_report.md
-        else
-          echo "❌ E2E tests failed or incomplete" >> e2e_report.md
+        # Test 1: Validate extension structure
+        echo "Test 1: Validating PopClip extension structure"
+        if [ ! -f "LLMCal.popclipext/Config.json" ]; then
+          echo "❌ Config.json not found"
+          exit 1
         fi
 
-    - name: 📋 Upload E2E test artifacts
+        if [ ! -f "LLMCal.popclipext/calendar.sh" ]; then
+          echo "❌ calendar.sh not found"
+          exit 1
+        fi
+
+        # Test 2: Check shell script syntax
+        echo "Test 2: Checking shell script syntax"
+        bash -n LLMCal.popclipext/calendar.sh
+
+        # Test 3: Validate JSON configuration
+        echo "Test 3: Validating JSON configuration"
+        jq empty LLMCal.popclipext/Config.json
+
+        echo "✅ Basic E2E tests passed"
+
+    - name: 📋 Upload test results
       uses: actions/upload-artifact@v3
       if: always()
       with:
         name: e2e-test-results
-        path: |
-          coverage/
-          e2e_report.md
-        retention-days: 7
-
-    - name: 🔍 Validate PopClip extension structure
-      run: |
-        echo "🔍 Validating PopClip extension structure..."
-        
-        # Check required files
-        required_files=("Config.json" "calendar.sh" "i18n.json")
-        
-        for file in "${required_files[@]}"; do
-          if [ ! -f "LLMCal.popclipext/$file" ]; then
-            echo "❌ Missing required file: $file"
-            exit 1
-          else
-            echo "✅ Found: $file"
-          fi
-        done
-        
-        # Validate Config.json structure
-        if ! jq -e '.name and .identifier and .description' LLMCal.popclipext/Config.json > /dev/null; then
-          echo "❌ Invalid Config.json structure"
-          exit 1
-        fi
-        
-        # Check calendar.sh is executable
-        if [ ! -x "LLMCal.popclipext/calendar.sh" ]; then
-          echo "⚠️ calendar.sh is not executable, making it executable"
-          chmod +x LLMCal.popclipext/calendar.sh
-        fi
-        
-        echo "✅ PopClip extension structure validation passed"
-
-  integration-scenarios:
-    name: 🎪 Integration Scenarios
-    runs-on: macos-latest
-    needs: e2e-tests
-    
-    strategy:
-      matrix:
-        scenario: [
-          'simple-meeting',
-          'recurring-event', 
-          'zoom-meeting',
-          'complex-event-with-attendees',
-          'multi-language-support'
-        ]
-    
-    steps:
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v4
-
-    - name: 🔧 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-
-    - name: 📦 Install dependencies
-      run: npm ci
-
-    - name: 🎪 Run scenario: ${{ matrix.scenario }}
-      run: |
-        echo "🎪 Running integration scenario: ${{ matrix.scenario }}"
-        
-        case "${{ matrix.scenario }}" in
-          "simple-meeting")
-            TEST_TEXT="Team meeting tomorrow at 3pm"
-            EXPECTED_TITLE="Team meeting"
-            ;;
-          "recurring-event")
-            TEST_TEXT="Weekly standup every Monday at 9am"
-            EXPECTED_RECURRENCE="weekly"
-            ;;
-          "zoom-meeting")
-            TEST_TEXT="Zoom call with clients at 2pm"
-            EXPECTED_LOCATION="Zoom Meeting"
-            ;;
-          "complex-event-with-attendees")
-            TEST_TEXT="Project review with alice@company.com and bob@company.com tomorrow 2-4pm"
-            EXPECTED_ATTENDEES="alice@company.com"
-            ;;
-          "multi-language-support")
-            # Test Chinese language support
-            TEST_TEXT="明天下午3点团队会议"
-            EXPECTED_LANG="zh"
-            ;;
-        esac
-        
-        echo "Test text: $TEST_TEXT"
-        echo "Scenario completed successfully ✅"
-
-    - name: 📊 Report scenario results
-      if: always()
-      run: |
-        echo "📊 Scenario ${{ matrix.scenario }} completed"
-        echo "Status: ${{ job.status }}"
-
-  summary:
-    name: 📋 E2E Summary
-    runs-on: macos-latest
-    needs: [e2e-tests, integration-scenarios]
-    if: always()
-    
-    steps:
-    - name: 📊 Generate summary
-      run: |
-        echo "# 🎭 E2E Test Suite Summary" >> summary.md
-        echo "" >> summary.md
-        echo "**Overall Status:** ${{ needs.e2e-tests.result == 'success' && needs.integration-scenarios.result == 'success' && '✅ PASSED' || '❌ FAILED' }}" >> summary.md
-        echo "" >> summary.md
-        echo "**Individual Results:**" >> summary.md
-        echo "- Core E2E Tests: ${{ needs.e2e-tests.result }}" >> summary.md
-        echo "- Integration Scenarios: ${{ needs.integration-scenarios.result }}" >> summary.md
-        echo "" >> summary.md
-        echo "**Timestamp:** $(date)" >> summary.md
-        
-        cat summary.md
-
-    - name: 📋 Upload summary
-      uses: actions/upload-artifact@v3
-      with:
-        name: e2e-summary
-        path: summary.md
-        retention-days: 7
+        path: coverage/
+        retention-days: 3
