@@ -1,3 +1,16 @@
+# Dependencies
+node_modules/
+*/node_modules/
+venv/
+env/
+.venv/
+
+# Build outputs
+dist/
+build/
+*.zip
+*.popclipext.zip
+
 # Internal files - not for public
 internal_tests/
 internal_docs/
@@ -54,3 +67,8 @@ error_report_*.txt
 # PopClip internal
 LLMCal.popclipext/internal_*
 LLMCal.popclipext/i18n_backups/
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
