@@ -17,6 +17,21 @@ internal_docs/
 i18n_backups/
 test_logs/
 
+# Development files - not for users
+**/test*.sh
+**/test*.applescript
+package_extension.sh
+setup_security.sh
+jest.config.js
+jest.setup.js
+zoom.md
+CLAUDE.md
+*PLAN.md
+*SUMMARY.md
+LLMCalApp/
+demo/
+assets/
+
 # API keys and credentials
 *.key
 *.secret

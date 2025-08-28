@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://cafferychen777.github.io/LLMCal/sitemap.xml
-
